@@ -17,6 +17,7 @@ def upload_document():
     file = request.files['file']
 
     if file and is_allowed_file_extension(file.filename):
+        ingest_file(file)
         analyze_file(file)
         return '', 200
     return '', 500
