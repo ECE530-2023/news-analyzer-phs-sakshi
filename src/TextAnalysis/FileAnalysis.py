@@ -1,5 +1,7 @@
 from flask import Flask, flash, request, redirect, url_for
 
+from src.TextAnalysis.TextAnalyzerImpl import get_definition, getParagraphsBySentiment, getParagraphsByKeywords
+
 app = Flask(__name__)
 
 
@@ -8,18 +10,28 @@ app = Flask(__name__)
 # 200 - Successful - list of paragraphs
 # 400 - Bad Request
 # 500 - Internal Server Error
-@app.route('/paragraphsByKeyword', methods=['POST'])
+@app.route('/paragraphsByKeyword', methods=['GET'])
 def get_paragraphs_by_keywords():
-    return '', 200
+    args = request.args
+    sentiment = args.get('keyword')
+    paragraphs = getParagraphsByKeywords(sentiment)
+    if paragraphs:
+        return paragraphs, 200
+    return 'Keyword not found', 400
 
 # @Input parameters - sentiment to match the paragraphs
 # Response -
 # 200 - Successful - list of paragraphs
 # 400 - Bad Request
 # 500 - Internal Server Error
-@app.route('/paragraphsBySentiment', methods=['POST'])
+@app.route('/paragraphsBySentiment', methods=['GET'])
 def get_paragraphs_by_sentiment():
-    return [], 200
+    args = request.args
+    sentiment = args.get('sentiment')
+    if sentiment not in ['positive','negative','neutral']:
+        return 'No such sentiment', 400
+    paragraphs = getParagraphsBySentiment(sentiment)
+    return paragraphs, 200
 
 # @Input parameters - keywords to
 # Response -
@@ -28,7 +40,9 @@ def get_paragraphs_by_sentiment():
 # 500 - Internal Server Error
 @app.route('/keywordDefinition',methods=['GET'])
 def get_keyword_definition():
-    definition = get_keyword_definition(keyword)
+    args = request.args
+    keyword = args.get('keyword')
+    definition = get_definition(keyword)
     if definition:
         return definition, 200
     return 'Error - Keyword not found', 400
@@ -40,7 +54,9 @@ def get_keyword_definition():
 # 500 - Internal Server Error
 @app.route('/documentSummary',methods=['GET'])
 def get_document_summary():
+    file = request.files['file']
     summary = get_document_summary(file)
     if summary:
         return summary, 200
     return 'Unable to find document', 400
+
