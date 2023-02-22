@@ -34,3 +34,8 @@ def test_is_allowed_file_extension():
     for test in testcases:
         logging.info("testing case" + str(test))
         assert file_uploader.get_user_file_ids(test[0]) == test[1]
+
+
+test_get_user_file_ids()
+test_get_file_by_file_id()
+test_is_allowed_file_extension()
