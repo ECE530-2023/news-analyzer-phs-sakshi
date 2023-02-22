@@ -1,5 +1,5 @@
-from flask import Flask, flash, request, redirect, url_for
-
+"""Module for uploading file"""
+from flask import Flask, flash, request
 from src.FeedIngester.IngesterFeed import ingest_file
 from src.FileUploader.file_uploader_impl import get_user_file_ids, get_file_by_fileId, is_allowed_file_extension
 from src.TextAnalysis.text_analyzer_impl import analyze_file
