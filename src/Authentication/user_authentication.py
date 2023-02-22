@@ -1,11 +1,9 @@
 """ User Authentication Module """
 import LoginForm
 from flask import Flask, request, flash
-
 from user_authentication_impl import login_user, reset_username, reset_password
 
 app = Flask(__name__)
-
 
 
 @app.route('/login', methods=['POST'])
@@ -27,6 +25,7 @@ Response - 200 - Login Successful
             return 'Success', 200
         return '', 401
     return 'Server Error', 500
+
 
 @app.route('/forget_username', methods=['POST'])
 def forget_username():
@@ -65,7 +64,6 @@ Response - 200 - Successful
             return 'Success', 200
         return '', 401
     return 'Server Error', 500
-
 
 
 @app.route('/update_password', methods=['POST'])
