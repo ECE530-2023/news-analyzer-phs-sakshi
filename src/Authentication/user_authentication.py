@@ -2,7 +2,7 @@
 import LoginForm
 from flask import Flask, request, flash
 
-from UserAuthenticationImpl import login_user, reset_username, reset_password
+from user_authentication_impl import login_user, reset_username, reset_password
 
 app = Flask(__name__)
 
