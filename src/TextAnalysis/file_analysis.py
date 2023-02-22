@@ -1,6 +1,6 @@
 from flask import Flask, flash, request, redirect, url_for
 
-from src.TextAnalysis.text_analyzer_impl import get_definition, getParagraphsBySentiment, getParagraphsByKeywords
+from src.TextAnalysis.text_analyzer_impl import get_definition, get_paragraphs_by_sentiment, get_paragraphs_by_keywords
 
 app = Flask(__name__)
 
@@ -14,7 +14,7 @@ app = Flask(__name__)
 def get_paragraphs_by_keywords():
     args = request.args
     sentiment = args.get('keyword')
-    paragraphs = getParagraphsByKeywords(sentiment)
+    paragraphs = get_paragraphs_by_keywords(sentiment)
     if paragraphs:
         return paragraphs, 200
     return 'Keyword not found', 400
@@ -30,7 +30,7 @@ def get_paragraphs_by_sentiment():
     sentiment = args.get('sentiment')
     if sentiment not in ['positive','negative','neutral']:
         return 'No such sentiment', 400
-    paragraphs = getParagraphsBySentiment(sentiment)
+    paragraphs = get_paragraphs_by_sentiment(sentiment)
     return paragraphs, 200
 
 # @Input parameters - keywords to
