@@ -1,6 +1,6 @@
 from flask import Flask, flash, request, redirect, url_for
 
-from src.TextAnalysis.TextAnalyzerImpl import get_definition, getParagraphsBySentiment, getParagraphsByKeywords
+from src.TextAnalysis.text_analyzer_impl import get_definition, getParagraphsBySentiment, getParagraphsByKeywords
 
 app = Flask(__name__)
 
