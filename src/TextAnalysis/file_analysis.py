@@ -1,9 +1,28 @@
 """Module for file analysis"""
-from flask import Flask, request
+from flask import Flask, request, flash
 from src.TextAnalysis.text_analyzer_impl import get_definition, get_paragraphs_by_sentiment, get_paragraphs_by_keywords
-
+from src.FileUploader.file_uploader_impl import is_allowed_file_extension
+from text_analyzer_impl import analyze_file
 app = Flask(__name__)
 
+
+# @Input parameters - document to analyze
+# Response -
+# 200 - Successful
+# 400 - Bad Request
+# 415 - Unsupported Media type
+# 500 - Internal Server Error
+@app.route('/analyze', methods=['GET'])
+def analyze_document():
+    if 'file' not in request.files or request.files['file'].filename == '':
+        flash('No file part')
+        return 'No file', 400
+    file = request.files['file']
+
+    if file and is_allowed_file_extension(file.filename):
+        analyze_file(file)
+        return '', 200
+    return '', 500
 
 # @Input parameters - keywords to match the paragraphs
 # Response -
