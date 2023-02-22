@@ -1,14 +1,44 @@
+Overview -
+The application is built using Python and can analyze documents in various formats, including PDF, Microsoft Word,
+and plain text files. The application can identify entities, relationships, keywords and sentiments in the text,
+and it can generate reports summarizing the information in the document.
+
+Setup -
+requirements - Python 3
+
+Usage
+To use the Smart Document Analyzer, you will need to provide it with a document to analyze.
+The application supports the following file formats:
+    - PDF
+    - Microsoft Word (DOC and DOCX)
+    - Plain text
+    - Image (png/jpg/jpeg)
+
+To analyze a document, run the main.py script and enter the path to the file when prompted.
+The application will analyze the document and generate a report summarizing the information in the document.
+
 Customers -
 1. Application developers
 2. Analysts
+
 User stories -
+Authentication module -
 - User should be able to login
 - User should be able to create an account
 - User should be able to delete an account
-- User should be able to update username/password
+- User should be able to change password
+
+File Upload module -
 - User should be able to upload documents in different formats(jpg,pdf,csv,doc,png)
 - User should be able to download his past documents
+
+File Analysis module -
 - User should be able to see document summary
 - User should be able to find all paragraphs related to a specific keyword
 - User should be able to find all paragraphs related to a sentiment(positive/negative/neutral)
-- User should be able to
+- User should be able to find the definition for a given keyword
+
+File Ingester module -
+- User should be able to ingest files
+
+I would prefer a entity based module for this project.

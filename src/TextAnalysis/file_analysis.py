@@ -1,5 +1,5 @@
-from flask import Flask, flash, request, redirect, url_for
-
+"""Module for file analysis"""
+from flask import Flask, request
 from src.TextAnalysis.text_analyzer_impl import get_definition, get_paragraphs_by_sentiment, get_paragraphs_by_keywords
 
 app = Flask(__name__)
@@ -19,6 +19,7 @@ def get_paragraphs_by_keywords():
         return paragraphs, 200
     return 'Keyword not found', 400
 
+
 # @Input parameters - sentiment to match the paragraphs
 # Response -
 # 200 - Successful - list of paragraphs
@@ -33,6 +34,7 @@ def get_paragraphs_by_sentiment():
     paragraphs = get_paragraphs_by_sentiment(sentiment)
     return paragraphs, 200
 
+
 # @Input parameters - keywords to
 # Response -
 # 200 - Successful - definition of the keyword
@@ -46,6 +48,7 @@ def get_keyword_definition():
     if definition:
         return definition, 200
     return 'Error - Keyword not found', 400
+
 
 # @Input parameters - file id of the file to summarize
 # Response -
