@@ -15,7 +15,9 @@ def analyze_file(file):
 
 def find_keywords(file):
     """ finds keywords of the file"""
-    return file.split(' ')[:3]
+    if file:
+        return file.split(' ')[:3]
+    return []
 
 
 def analyze_text(file):
