@@ -17,8 +17,8 @@ def test_get_user_file_ids():
 def test_get_file_by_file_id():
     """ tests fetching a file using file id"""
     testcases = [
-        [2, 'file 2'],
-        [10, None]
+        [2, True],
+        [10, False]
     ]
     for test in testcases:
         logging.info("testing case" + str(test))
@@ -33,7 +33,7 @@ def test_is_allowed_file_extension():
     ]
     for test in testcases:
         logging.info("testing case" + str(test))
-        assert file_uploader.get_user_file_ids(test[0]) == test[1]
+        assert file_uploader.is_allowed_file_extension(test[0]) == test[1]
 
 
 test_get_user_file_ids()

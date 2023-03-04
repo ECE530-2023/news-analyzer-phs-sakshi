@@ -13,7 +13,7 @@ def test_ingest_file():
     ]
     for test in testcases:
         logging.info("testing case" + str(test))
-        assert IngesterFeed.ingest_file(test[0], test[1]) == test[2]
+        assert IngesterFeed.ingest_file(test[0]) == test[1]
 
 
 test_ingest_file()
