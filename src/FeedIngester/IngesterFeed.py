@@ -1,6 +1,6 @@
 """Feed Ingester Module"""
 from flask import Flask
-
+from src.InputOutput.output import print_string
 app = Flask(__name__)
 
 
@@ -12,5 +12,5 @@ def ingest_file(file):
     """
     if not file:
         return False
-    print("file saved")
+    print_string("file saved")
     return True
