@@ -1,8 +1,12 @@
+"""Module for operating on the Document table"""
+
 from Query_Execution import execute_query
 from src.InputOutput.output import print_string
 
 
 def create_documents_table():
+    """create Document table and insert sample values"""
+
     create_document_table = '''CREATE TABLE IF NOT EXISTS document (
                                 doc_id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 doc_name TEXT NOT NULL,

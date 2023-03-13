@@ -1,8 +1,11 @@
+"""Module for operating on users table"""
+
 from Query_Execution import execute_query
 from src.InputOutput.output import print_string
 
 
 def create_users_table():
+    """create and and sample values to users table"""
     create_users_table = '''CREATE TABLE IF NOT EXISTS users (
                                     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
                                     permission_set TEXT NOT NULL,

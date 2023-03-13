@@ -1,6 +1,6 @@
 """Tests Feed Ingester module"""
 import logging
-import src.FeedIngester.IngesterFeed as IngesterFeed
+import src.FeedIngester.ingester_feed as IngesterFeed
 
 
 def test_ingest_file():

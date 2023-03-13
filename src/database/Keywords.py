@@ -1,7 +1,12 @@
+"""Module for operating on Keywords table"""
+
 from Query_Execution import execute_query
 from src.InputOutput.output import print_string
 
+
 def create_table_keywords():
+    """create the Keywords table"""
+
     create_table_keywords = ''' CREATE TABLE IF NOT EXISTS KEYWORDS (
                                 keyword_id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 keyword TEXT NOT NULL,

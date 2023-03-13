@@ -1,27 +1,37 @@
-We have used SQLite for our database implementation along with cloud.
-The database for news feed analyzer has two parts - 
+Collaborator - Anwesha Saha
+
+Storage Decision Structure:
+-------------------------------
+We decided to use two forms of storage. This is because we estimate that some data for example entire documents will require expansive and undeterminable amounts of space whereas links and other structured data can be stored in a relational data format for quick access.
 1. SQLite
 2. Cloud storage (such as AWS S3)
 
-We will be using SQLite to store our analysis of the documents. However the original documents itself and the text extraction of the documents will be stored on cloud.
-We chose a SQL + cloud structure because of the following reasons -
-1. We wanted quick and easy access to our analysis of the documents, therefore storing the same in SQLite
-2. Since we may have thousands of files, and each file can be very large, we chose to store those files in cloud.
-3. The format of our data is very structured, so we felt SQLite would serve us better.
-4. Relational Data - SQL is ideal for handling relational data, where data is stored in tables and has a predefined schema.
+SQLite will be used to store the components and links of the documents and the links will give access to the location where the actual file is stored in cloud.The entire original document and extracted text along with summary will be stored on cloud.
 
-Advantages of SQLite:
-- Lightweight - SQLite is a lightweight database engine, which means it uses very few system resources.
-- High Performance: SQLite is fast and efficient. It uses a transactional model and can handle large amounts of data. It also has a small memory footprint, which makes it suitable for high-performance applications.
+Reason for Storage Structure:
+-------------------------------
+This structure is chosen because:
 
-Advantages of Cloud:
-- Scalability - We can scale the database based on the size of the file/number of files
-- Reliability - Cloud services are designed to be highly reliable and provide high levels of uptime. We can be sure that we don't lose the files of client and they can download the files everytime.
-- Security - Cloud providers invest heavily in security measures to protect their infrastructure and customer data.
-- Disaster Recovery: Cloud services offer built-in disaster recovery capabilities, which can help businesses to quickly recover from a catastrophic event such as a natural disaster or cyber attack.
+1. It gives us faster access to data we immediately require - through SQLite
+2. Cloud storage allows us to consider large file sizes and different formats without having to worry about these considerations on local system (dynamic allocation of resources)
+3. Without the actual document analysis and the original document, the data is quite structured which is a good fit for a relational database and allows the use of schemas and a table structure
 
-Also, we plan to implement the authentication by Google(handle credentials using Firebase). 
-For SQLite we plan to have the following structure - 
+Advantages of Choosing Selected Methods: 
+-----------------------------------------
+SQLite
+- Lightweight
+- High Performance - uses a transactional model,small memory footprint(suitable for high-performance applications)
+
+Cloud:
+- Scalability - scale database based on size of the file/number of files
+- Reliability - intrinsic reliability
+- Security - intrinsic security
+- Disaster Recovery - built-in disaster recovery
+
+Implement the authentication by Google(handle credentials using Firebase).
+
+Structure of SQLite:
+---------------------
 
 Tables:
 
@@ -53,4 +63,4 @@ keyword_name
 The figure below shows how the tables are connected.
 ![Database Design](database%20design.png)<br />
 
-This design helps with my APIs since my APIs which are compute heavy, like text analysis API use SQLite to access contents which is faster and utilises cloud for when we need our API to store large amounts of data.
+This design helps with our APIs since these APIs are compute heavy - for example text analysis API uses SQLite to access contents which is faster and utilises cloud for when we need our API to store large amounts of data.

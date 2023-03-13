@@ -1,7 +1,11 @@
+"""Module for executing sqlite queries"""
+
 import sqlite3
 from src.InputOutput.output import print_string
 
 def execute_query(query):
+    """execute queries"""
+
     sqlite_connection = sqlite3.connect('SQLite_Python.db')
     record = False
     try:
