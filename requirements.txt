@@ -3,3 +3,4 @@
 
 # Flask Framework
 Flask==2.0.3
+boto3==1.26.89
