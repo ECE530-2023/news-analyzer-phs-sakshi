@@ -1,4 +1,6 @@
 """Feed Ingester Module"""
+import json
+
 from flask import Flask
 from src.InputOutput.output import print_string
 import boto3
@@ -19,8 +21,7 @@ def ingest_file(file):
     """
     if not file:
         return False
-    s3.upload_fileobj(file.filename, 'bucket-1', file.filename)
+    file_json = json.loads(file)
+    #s3.upload_fileobj(file_json["filename"], 'bucket-1', file_json["filename"])
     print_string('File uploaded successfully!')
     return True
-
-ingest_file()
