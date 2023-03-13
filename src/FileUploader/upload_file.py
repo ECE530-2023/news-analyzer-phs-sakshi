@@ -1,7 +1,7 @@
 """Module for uploading file"""
 from flask import Flask, flash, request
 from src.FeedIngester.ingester_feed import ingest_file
-from src.FileUploader.file_uploader_impl import get_user_file_ids, is_allowed_file_extension
+from src.FileUploader.file_uploader_impl import get_user_file_ids, is_allowed_file_extension, get_file_by_file_id
 from src.TextAnalysis.text_analyzer_impl import analyze_file
 
 
@@ -41,7 +41,7 @@ def download_document():
     if not file_id or file_id not in get_user_file_ids:
         flash('No file part')
         return 'No file', 400
-    file = get_file_by_fileId(file_id)
+    file = get_file_by_file_id(file_id)
     return file, 200
 
 
