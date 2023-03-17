@@ -10,5 +10,6 @@ pytesseract==0.3.10
 requests==2.27.1
 spacy==3.5.1
 textblob==0.17.1
-google==3.0.0
 python-docx==0.8.11
+google-oauth==1.0.0
+google==3.0.0

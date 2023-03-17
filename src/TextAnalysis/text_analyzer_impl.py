@@ -1,5 +1,4 @@
 """tests text analyzer module"""
-import docx
 import pypdf
 import pytesseract
 from PIL import Image
