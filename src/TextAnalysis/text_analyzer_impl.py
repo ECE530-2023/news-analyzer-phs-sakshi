@@ -4,7 +4,7 @@ import pypdf
 import pytesseract
 from PIL import Image
 import csv
-import python-docx
+import docx
 import spacy
 import requests
 from bs4 import BeautifulSoup
