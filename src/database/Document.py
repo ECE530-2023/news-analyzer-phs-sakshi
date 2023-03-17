@@ -1,9 +1,9 @@
 """Module for operating on the Document table"""
 
-from Query_Execution import execute_query, execute_insert_query
+from src.database.Query_Execution import execute_query, execute_insert_query
 from src.InputOutput.output import print_string
-from src.FeedIngester.ingester_feed import download_file
 import requests
+from flask import send_file
 
 
 def create_documents_table():
@@ -56,7 +56,7 @@ def fetch_all_user_file_ids(user_id):
     query = '''SELECT doc_id from document where user_id = ?'''
     records = execute_query(query,user_id)
     if records == False:
-        print_string("Unable to get file ids for the user " + user_id)
+        print_string("Unable to get file ids for the user " + str(user_id))
         return False
     return records
 
@@ -75,3 +75,9 @@ def get_text_of_file(file_id):
         print_string("File not found")
         return False
     return requests.get(url).content
+
+def download_file(url):
+    response = requests.get(url)
+    file_name = url.split('/')[-1]
+    headers = {'Content-Disposition': f'attachment; filename={file_name}'}
+    return send_file(response.content, as_attachment=True, attachment_filename=file_name, mimetype='application/octet-stream', headers=headers)

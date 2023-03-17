@@ -39,7 +39,7 @@ def execute_query(query, param):
         cursor.close()
         return True
     except sqlite3.Error as error:
-        print_string("Error while connecting to sqlite", error,query)
+        print_string("Error while connecting to sqlite" + str(error) + query)
         record = False
     finally:
         if sqlite_connection:

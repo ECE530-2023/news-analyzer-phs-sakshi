@@ -1,10 +1,9 @@
 """Feed Ingester Module"""
 import json
 from botocore.exceptions import ClientError
-from flask import Flask, request, send_file
+from flask import Flask, request
 from google.oauth2 import id_token
 from google.auth.transport import requests
-import requests as rq
 
 from src.FileUploader.file_uploader_impl import get_file_size
 from src.InputOutput.output import print_string
@@ -48,8 +47,3 @@ def ingest_file(file):
         return False
     except Exception as e:
         print_string("Error encountered " + e)
-def download_file(url):
-    response = rq.get(url)
-    file_name = url.split('/')[-1]
-    headers = {'Content-Disposition': f'attachment; filename={file_name}'}
-    return send_file(response.content, as_attachment=True, attachment_filename=file_name, mimetype='application/octet-stream', headers=headers)
