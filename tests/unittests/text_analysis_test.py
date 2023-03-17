@@ -20,7 +20,7 @@ def test_find_keywords():
         [None, []]
     ]
     for test in testcases:
-        text_analyzer.find_keywords(test[0] == test[1])
+        text_analyzer.find_keywords_file(test[0] == test[1])
 
 
 def test_analyze_text():
@@ -30,7 +30,7 @@ def test_analyze_text():
         [None, False]
     ]
     for test in testcases:
-        text_analyzer.analyze_text(test[0] == test[1])
+        text_analyzer.analyze_file_sentiment(test[0] == test[1])
 
 
 def test_convert_file_to_text():

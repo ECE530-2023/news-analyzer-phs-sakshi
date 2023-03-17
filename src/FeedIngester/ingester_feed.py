@@ -1,9 +1,15 @@
 """Feed Ingester Module"""
 import json
+from flask import Flask, request
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
-from flask import Flask
+from src.FileUploader.file_uploader_impl import get_file_size
 from src.InputOutput.output import print_string
 import boto3
+
+from src.database.Document import insert_doc_link
+
 app = Flask(__name__)
 
 
@@ -21,7 +27,16 @@ def ingest_file(file):
     """
     if not file:
         return False
+    token = request.headers.get('Authorization').split(' ')[1]
+    try:
+        idinfo = id_token.verify_oauth2_token(token, requests.Request())
+        user_id = idinfo['sub']
+    except ValueError:
+        # Invalid token
+        print_string("couldn't verify user")
     file_json = json.loads(file)
-    #s3.upload_fileobj(file_json["filename"], 'bucket-1', file_json["filename"])
+    file_link = s3.upload_fileobj(file_json["filename"], 'bucket-1', file_json["filename"])
+    file_size = get_file_size(file)
+    file_id = insert_doc_link(file_json["filename"], user_id, file_link, file_size)
     print_string('File uploaded successfully!')
-    return True
+    return file_id

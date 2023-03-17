@@ -1,5 +1,5 @@
 """ Implement main logic for file uploader APIs"""
-
+import os
 
 def get_user_file_ids(file_id):
     """
@@ -26,3 +26,10 @@ def is_allowed_file_extension(ext):
     """
     return '.' in ext and \
            ext.rsplit('.', 1)[1].lower() in ['pdf', 'png', 'jpg', 'jpeg', 'csv', 'doc']
+
+def get_file_size(file):
+    return os.path.getsize(file)
+
+def get_file_extension(ext):
+    return '.' in ext and ext.rsplit('.', 1)[1].lower()
+
