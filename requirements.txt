@@ -9,3 +9,4 @@ docx==0.2.4
 google==3.0.0
 nltk==3.8.1
 pypdf2==3.0.1
+pytesseract==0.3.10
