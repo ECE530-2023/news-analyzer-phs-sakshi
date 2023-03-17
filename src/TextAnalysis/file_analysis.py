@@ -1,8 +1,13 @@
 """Module for file analysis"""
 from flask import Flask, request, flash
-from src.TextAnalysis.text_analyzer_impl import get_definition, get_paragraphs_by_sentiment, get_paragraphs_by_keywords
-from src.FileUploader.file_uploader_impl import is_allowed_file_extension
+from src.TextAnalysis.text_analyzer_impl import get_definition, get_paragraphs_by_sentiment, get_paragraphs_by_keywords, \
+    get_document_summary
+from src.FileUploader.file_uploader_impl import is_allowed_file_extension, get_user_file_ids
 from text_analyzer_impl import analyze_file
+from google.oauth2 import id_token
+from google.auth.transport import requests
+from src.InputOutput.output import print_string
+
 app = Flask(__name__)
 
 
@@ -12,28 +17,23 @@ app = Flask(__name__)
 # 400 - Bad Request
 # 415 - Unsupported Media type
 # 500 - Internal Server Error
-@app.route('/analyze', methods=['GET'])
-def analyze_document():
-    if 'file' not in request.files or request.files['file'].filename == '':
-        flash('No file part')
-        return 'No file', 400
-    file = request.files['file']
-
-    if file and is_allowed_file_extension(file.filename):
-        analyze_file(file)
-        return '', 200
-    return '', 500
+@app.route('/analyze/<string:file_id>', methods=['GET'])
+def analyze_document(file_id):
+    user_id = get_user_id()
+    if not file_id or file_id not in get_user_file_ids(user_id):
+        flash('File not found')
+        return 'File not found', 400
+    file = analyze_file(file_id, user_id)
+    return file, 200
 
 # @Input parameters - keywords to match the paragraphs
 # Response -
 # 200 - Successful - list of paragraphs
 # 400 - Bad Request
 # 500 - Internal Server Error
-@app.route('/paragraphsByKeyword', methods=['GET'])
-def get_paragraphs_by_keywords():
-    args = request.args
-    sentiment = args.get('keyword')
-    paragraphs = get_paragraphs_by_keywords(sentiment)
+@app.route('/paragraphsByKeyword/<string : keyword>', methods=['GET'])
+def paragraphs_by_keywords(keyword):
+    paragraphs = get_paragraphs_by_keywords(keyword)
     if paragraphs:
         return paragraphs, 200
     return 'Keyword not found', 400
@@ -45,10 +45,10 @@ def get_paragraphs_by_keywords():
 # 400 - Bad Request
 # 500 - Internal Server Error
 @app.route('/paragraphsBySentiment', methods=['GET'])
-def get_paragraphs_by_sentiment():
+def paragraphs_by_sentiment():
     args = request.args
     sentiment = args.get('sentiment')
-    if sentiment not in ['positive','negative','neutral']:
+    if sentiment not in ['positive', 'negative', 'neutral']:
         return 'No such sentiment', 400
     paragraphs = get_paragraphs_by_sentiment(sentiment)
     return paragraphs, 200
@@ -74,11 +74,21 @@ def get_keyword_definition():
 # 200 - Successful - summary of the file
 # 400 - Bad Request - file not found
 # 500 - Internal Server Error
-@app.route('/documentSummary',methods=['GET'])
-def get_document_summary():
-    file = request.files['file']
-    summary = get_document_summary(file)
+@app.route('/documentSummary/<string:file_id>',methods=['GET'])
+def document_summary(file_id):
+    summary = get_document_summary(file_id)
     if summary:
         return summary, 200
     return 'Unable to find document', 400
 
+
+def get_user_id():
+    try:
+        token = request.headers.get('Authorization').split(' ')[1]
+        idinfo = id_token.verify_oauth2_token(token, requests.Request())
+        user_id = idinfo['sub']
+        return user_id
+    except ValueError:
+        # Invalid token
+        print_string("couldn't verify user")
+        return 'Unauthorized', 401

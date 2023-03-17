@@ -1,22 +1,25 @@
 """ Implement main logic for file uploader APIs"""
 import os
 
-def get_user_file_ids(file_id):
-    """
-    :param file_id: file id to search
-    :return: boolean returns True if file is present in the database
-    """
-    ids = [1, 2, 3, 4]
-    return file_id in ids
+from src.database.Document import fetch_all_user_file_ids
+from src.database.Document import get_file
 
 
-def get_file_by_file_id(file_id):
+def get_user_file_ids(user_id):
+    """
+    :param user_id: user id to
+    :return: all file ids for the user
+    """
+    file_ids = fetch_all_user_file_ids(user_id)
+    return file_ids if file_ids else []
+
+
+def get_file_by_file_id(file_id, user_id):
     """
     :param file_id: file id to search database
     :return: file with id = file_id
     """
-    files = {1: 'file 1', 2: 'file 2', 3: 'file 3', 4: 'file 4'}
-    return files[file_id] if file_id in files else None
+    return get_file(file_id, user_id)
 
 
 def is_allowed_file_extension(ext):

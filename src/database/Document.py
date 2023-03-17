@@ -2,6 +2,8 @@
 
 from Query_Execution import execute_query, execute_insert_query
 from src.InputOutput.output import print_string
+from src.FeedIngester.ingester_feed import download_file
+import requests
 
 
 def create_documents_table():
@@ -49,3 +51,27 @@ def update_doc_sentiment(file_id, senti):
         return False
     print_string("sentiment of file updated successfully")
     return True
+
+def fetch_all_user_file_ids(user_id):
+    query = '''SELECT doc_id from document where user_id = ?'''
+    records = execute_query(query,user_id)
+    if records == False:
+        print_string("Unable to get file ids for the user " + user_id)
+        return False
+    return records
+
+def get_file(file_id, user_id):
+    query = '''SELECT doc_link from document where user_id = ? AND doc_id = ?'''
+    url = execute_query(query, user_id, file_id)
+    if url == False:
+        print_string("File not found")
+        return False
+    return download_file(url)
+
+def get_text_of_file(file_id):
+    query = '''SELECT doc_text_link from document where doc_id = ?'''
+    url = execute_query(query, file_id)
+    if url == False:
+        print_string("File not found")
+        return False
+    return requests.get(url).content
