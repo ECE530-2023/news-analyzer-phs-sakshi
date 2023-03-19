@@ -1,6 +1,16 @@
-# This file is used by pip to install required python packages
-# Usage: pip install -r requirements.txt
-
-# Flask Framework
-Flask==2.0.3
+beautifulsoup4==4.11.1
 boto3==1.26.89
+docx==0.2.4
+Flask==2.2.3
+LoginForm==1.2.0
+Pillow==9.2.0
+protobuf==4.22.1
+pypdf==3.5.2
+pytesseract==0.3.10
+requests==2.27.1
+spacy==3.5.1
+textblob==0.17.1
+python-docx==0.8.11
+google-auth==2.16.2
+google-auth-oauthlib==1.0.0
+moto==4.1.4
