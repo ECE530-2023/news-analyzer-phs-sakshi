@@ -1,49 +1,33 @@
-"""Feed Ingester Module"""
-import json
-from botocore.exceptions import ClientError
-from flask import Flask, request
-from google.oauth2 import id_token
-from google.auth.transport import requests
-
-from src.FileUploader.file_uploader_impl import get_file_size
-from src.InputOutput.output import print_string
-import boto3
-
-from src.database.Document import insert_doc_link
-
-app = Flask(__name__)
-
+import os
+from werkzeug.utils import secure_filename
+import boto3, botocore
 
 access_key = 'AKIAUPEMIMSKUTBFY366'
 access_secret = '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'
 bucket_name = 'bucket1-sep'
 
-s3 = boto3.client('s3', aws_access_key_id=access_key, aws_secret_access_key=access_secret)
+s3 = boto3.client(
+    "s3",
+    aws_access_key_id=access_key,
+    aws_secret_access_key=access_secret
+)
+def upload_file_to_s3(file):
+    filename = secure_filename(file.filename)
+    try:
+        s3.upload_fileobj(
+            file,
+            bucket_name,
+            file.filename,
+            ExtraArgs={
+                "ContentType": file.content_type
+            }
+        )
 
-@app.route('/ingestFile', methods=['POST'])
-def ingest_file(file):
-    """
-    :param file: ingest file
-    :return: boolean if file was ingested successfully
-    """
-    if not file:
-        return False
-    token = request.headers.get('Authorization').split(' ')[1]
-    try:
-        idinfo = id_token.verify_oauth2_token(token, requests.Request())
-        user_id = idinfo['sub']
-    except ValueError:
-        # Invalid token
-        print_string("couldn't verify user")
-    try:
-        file_json = json.loads(file)
-        file_link = s3.upload_fileobj(file_json["filename"], bucket_name, file_json["filename"])
-        file_size = get_file_size(file)
-        file_id = insert_doc_link(file_json["filename"], user_id, file_link, file_size)
-        print_string('File uploaded successfully!')
-        return file_id
-    except ClientError as e:
-        print_string("Invalid credentials" + e)
-        return False
     except Exception as e:
-        print_string("Error encountered " + e)
+        # This is a catch all exception, edit this part to fit your needs.
+        print("Something Happened: ", e)
+        return e
+
+
+    # after upload file to s3 bucket, return filename of the uploaded file
+    return file.filename

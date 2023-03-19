@@ -4,11 +4,16 @@ import pytesseract
 from PIL import Image
 import csv
 import docx
-import spacy
 import requests
 from bs4 import BeautifulSoup
 from textblob import TextBlob
-from spacy.lang.en.stop_words import STOP_WORDS
+import nltk
+from nltk.corpus import stopwords as stp
+from nltk.tokenize import word_tokenize
+from nltk.probability import FreqDist
+from nltk.tokenize import sent_tokenize
+from heapq import nlargest
+
 
 from src.FileUploader.file_uploader_impl import get_file_extension
 from src.database.Document import update_doc_sentiment, get_text_of_file
@@ -16,8 +21,9 @@ from src.database.Keywords import insert_keywords
 from src.database.Paragraphs import insert_paragraph, update_para_sentiment, get_para_by_keyword
 from src.database.Paragraphs import get_para_by_sentiment
 
+nltk.download('stopwords')
+nltk.download('punkt')
 
-nlp = spacy.load('en_core_web_sm')
 def analyze_file(file, file_id):
     """
     :param file: file to analyze
@@ -38,19 +44,17 @@ def find_keywords_file(file, file_id):
     return keywords
 
 def find_keywords(file):
-    keywords = []
-    if file:
-        # Process the text with spaCy
-        doc = nlp(file)
+    words = word_tokenize(file)
 
-        # Extract the most relevant keywords
-        keywords = []
-        for token in doc:
-            if token.is_stop or token.is_punct or token.is_space:
-                continue
-            if token.pos_ in ['NOUN', 'PROPN', 'ADJ']:
-                keywords.append(token.lemma_)
-    return keywords
+    # Remove stopwords (common words that don't carry much meaning)
+    stopwords = set(stp.words('english'))
+    words = [word for word in words if word.casefold() not in stopwords]
+
+    # Calculate the frequency distribution of the remaining words
+    fdist = FreqDist(words)
+
+    # Print the 10 most common words (i.e. the keywords)
+    return fdist.most_common(10)
 
 def analyze_file_sentiment(file, file_id):
     """ analyzes the text present in a file"""
@@ -145,20 +149,35 @@ def get_definition(keyword):
 def get_document_summary(file_id):
     """ returns the summary of a file"""
     text = get_text_of_file(file_id)
-    doc = nlp(text)
-    sentences = [sent for sent in doc.sents]
+    # Tokenize the document text into individual sentences
+    sentences = sent_tokenize(text)
+    word_frequencies = {}
+    for sentence in sentences:
+        for word in nltk.word_tokenize(sentence):
+            if word not in word_frequencies:
+                word_frequencies[word] = 1
+            else:
+                word_frequencies[word] += 1
+    maximum_frequency = max(word_frequencies.values())
+    for word in word_frequencies.keys():
+        word_frequencies[word] = (word_frequencies[word]/maximum_frequency)
 
+    # Calculate the score of each sentence based on the sum of the scores of its words
     sentence_scores = {}
-    for sent in sentences:
-        for word in sent:
-            if word.text.lower() in STOP_WORDS:
-                break
-        else:
-            sentence_scores[str(sent)] = sent.similarity(doc)
+    for sentence in sentences:
+        for word in nltk.word_tokenize(sentence.lower()):
+            if word in word_frequencies.keys():
+                if len(sentence.split(' ')) < 30:
+                    if sentence not in sentence_scores.keys():
+                        sentence_scores[sentence] = word_frequencies[word]
+                    else:
+                        sentence_scores[sentence] += word_frequencies[word]
 
-    summary_sentences = sorted(sentence_scores, key=sentence_scores.get, reverse=True)[:3]
+    # Print the summary, which consists of the three highest-scoring sentences
+    summary_sentences = nlargest(3, sentence_scores, key=sentence_scores.get)
     summary = ' '.join(summary_sentences)
     return summary
+
 
 
 def get_paragraphs_by_sentiment(sentiment):

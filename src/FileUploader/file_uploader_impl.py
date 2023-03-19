@@ -28,7 +28,7 @@ def is_allowed_file_extension(ext):
     :return: boolean returns True if extension is allowed
     """
     return '.' in ext and \
-           ext.rsplit('.', 1)[1].lower() in ['pdf', 'png', 'jpg', 'jpeg', 'csv', 'doc']
+           ext.rsplit('.', 1)[1].lower() in ['pdf', 'png', 'jpg', 'jpeg', 'csv', 'doc', 'txt']
 
 def get_file_size(file):
     return os.path.getsize(file)
