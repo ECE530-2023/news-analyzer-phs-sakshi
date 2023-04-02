@@ -1,15 +1,14 @@
 """Module for file analysis"""
-from flask import Flask, request, flash
+from flask import request, flash
 from src.TextAnalysis.text_analyzer_impl import get_definition, get_paragraphs_by_sentiment, get_paragraphs_by_keywords, \
     get_document_summary
-from src.FileUploader.file_uploader_impl import is_allowed_file_extension, get_user_file_ids
+from src.FileUploader.file_uploader_impl import get_user_file_ids
 from text_analyzer_impl import analyze_file
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from src.InputOutput.output import print_string
-
-app = Flask(__name__)
-
+from __main__ import app
+from src.Thread import Thread
 
 # @Input parameters - document to analyze
 # Response -
@@ -23,7 +22,11 @@ def analyze_document(file_id):
     if not file_id or file_id not in get_user_file_ids(user_id):
         flash('File not found')
         return 'File not found', 400
-    file = analyze_file(file_id, user_id)
+    #file = analyze_file(file_id, user_id)
+
+    thread = Thread(analyze_file, (file_id, user_id), lambda res: res[0], ())
+    thread.start()
+    file = thread.join()
     return file, 200
 
 # @Input parameters - keywords to match the paragraphs
@@ -33,7 +36,11 @@ def analyze_document(file_id):
 # 500 - Internal Server Error
 @app.route('/paragraphsByKeyword/<string : keyword>', methods=['GET'])
 def paragraphs_by_keywords(keyword):
-    paragraphs = get_paragraphs_by_keywords(keyword)
+    #paragraphs = get_paragraphs_by_keywords(keyword)
+
+    thread = Thread(get_paragraphs_by_keywords, (keyword,), lambda res: res[0], ())
+    thread.start()
+    paragraphs = thread.join()
     if paragraphs:
         return paragraphs, 200
     return 'Keyword not found', 400
@@ -50,7 +57,11 @@ def paragraphs_by_sentiment():
     sentiment = args.get('sentiment')
     if sentiment not in ['positive', 'negative', 'neutral']:
         return 'No such sentiment', 400
-    paragraphs = get_paragraphs_by_sentiment(sentiment)
+    #paragraphs = get_paragraphs_by_sentiment(sentiment)
+
+    thread = Thread(get_paragraphs_by_sentiment, (sentiment,), lambda res: res[0], ())
+    thread.start()
+    paragraphs = thread.join()
     return paragraphs, 200
 
 
@@ -63,7 +74,12 @@ def paragraphs_by_sentiment():
 def get_keyword_definition():
     args = request.args
     keyword = args.get('keyword')
-    definition = get_definition(keyword)
+    #definition = get_definition(keyword)
+
+    thread = Thread(get_definition, (keyword,), lambda res: res[0], ())
+    thread.start()
+    definition = thread.join()
+
     if definition:
         return definition, 200
     return 'Error - Keyword not found', 400
@@ -76,7 +92,11 @@ def get_keyword_definition():
 # 500 - Internal Server Error
 @app.route('/documentSummary/<string:file_id>',methods=['GET'])
 def document_summary(file_id):
-    summary = get_document_summary(file_id)
+    #summary = get_document_summary(file_id)
+
+    thread = Thread(get_document_summary, (file_id,), lambda res: res[0], ())
+    thread.start()
+    summary = thread.join()
     if summary:
         return summary, 200
     return 'Unable to find document', 400

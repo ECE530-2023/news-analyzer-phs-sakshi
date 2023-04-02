@@ -6,9 +6,7 @@ from src.InputOutput.output import print_string
 from user_authentication_impl import login_user, reset_username, reset_password
 from google.oauth2 import id_token
 from google.auth.transport import requests
-
-app = Flask(__name__)
-
+from __main__ import app
 
 @app.route('/login', methods=['POST'])
 def login():
