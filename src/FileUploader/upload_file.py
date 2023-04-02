@@ -1,15 +1,13 @@
 """Module for uploading file"""
-from flask import Flask, flash, request
+from flask import flash, request
 from src.FeedIngester.ingester_feed import upload_file_to_s3
 from src.FileUploader.file_uploader_impl import get_user_file_ids, is_allowed_file_extension, get_file_by_file_id
 from src.InputOutput.output import print_string
 from src.TextAnalysis.text_analyzer_impl import analyze_file
 from google.oauth2 import id_token
 from google.auth.transport import requests
-
-
-app = Flask(__name__)
-
+from __main__ import app
+from src.Thread import Thread
 
 # @Input parameters - document to upload
 # Response -
@@ -27,7 +25,10 @@ def upload_document():
 
     if file and is_allowed_file_extension(file.filename):
         file_id = upload_file_to_s3(file)
-        analyze_file(file, file_id)
+        #analyze_file(file, file_id)
+        #implement threading
+        thread = Thread(analyze_file, (file, file_id), lambda _: None, ())
+        thread.start()
         return '', 200
     return '', 500
 
@@ -51,8 +52,12 @@ def download_document():
         if not file_id or file_id not in get_user_file_ids(user_id):
             flash('File not found')
             return 'File not found', 404
-        file = get_file_by_file_id(file_id, user_id)
+        #file = get_file_by_file_id(file_id, user_id)
+        thread = Thread(get_file_by_file_id, (file_id, user_id), lambda res: res[0], ())
+        thread.start()
+        file = thread.join()
         return file, 200
+
     except ValueError:
         # Invalid token
         print_string("couldn't verify user")

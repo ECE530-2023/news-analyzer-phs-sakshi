@@ -1,6 +1,6 @@
 import os
 from werkzeug.utils import secure_filename
-import boto3, botocore
+import boto3
 
 access_key = 'AKIAUPEMIMSKUTBFY366'
 access_secret = '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'
