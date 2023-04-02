@@ -1,12 +1,12 @@
 """ User Authentication Module """
 import LoginForm
-from flask import Flask, request, flash, request
+from flask import flash, request
 
 from src.InputOutput.output import print_string
-from user_authentication_impl import login_user, reset_username, reset_password
+from user_authentication_impl import reset_username, reset_password
 from google.oauth2 import id_token
 from google.auth.transport import requests
-from __main__ import app
+from src.main import app
 
 @app.route('/login', methods=['POST'])
 def login():

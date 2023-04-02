@@ -7,7 +7,7 @@ from text_analyzer_impl import analyze_file
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from src.InputOutput.output import print_string
-from __main__ import app
+from src.main import app
 from src.Thread import Thread
 
 # @Input parameters - document to analyze
