@@ -27,7 +27,6 @@ def analyze_document(file_id):
     thread = Thread(analyze_file, (file_id, user_id), lambda res: res[0], ())
     thread.start()
     file = thread.join()
-
     return file, 200
 
 # @Input parameters - keywords to match the paragraphs
@@ -98,7 +97,6 @@ def document_summary(file_id):
     thread = Thread(get_document_summary, (file_id,), lambda res: res[0], ())
     thread.start()
     summary = thread.join()
-
     if summary:
         return summary, 200
     return 'Unable to find document', 400
