@@ -26,7 +26,9 @@ def analyze_document(file_id):
 
     thread = Thread(analyze_file, (file_id, user_id), lambda res: res[0], ())
     thread.start()
+    thread.stop()
     file = thread.join()
+    thread.stop_event.set()
     return file, 200
 
 # @Input parameters - keywords to match the paragraphs
@@ -40,7 +42,9 @@ def paragraphs_by_keywords(keyword):
 
     thread = Thread(get_paragraphs_by_keywords, (keyword,), lambda res: res[0], ())
     thread.start()
+    thread.stop()
     paragraphs = thread.join()
+    thread.stop_event.set()
     if paragraphs:
         return paragraphs, 200
     return 'Keyword not found', 400
@@ -61,7 +65,10 @@ def paragraphs_by_sentiment():
 
     thread = Thread(get_paragraphs_by_sentiment, (sentiment,), lambda res: res[0], ())
     thread.start()
+
+    thread.stop()
     paragraphs = thread.join()
+    thread.stop_event.set()
     return paragraphs, 200
 
 
@@ -78,8 +85,10 @@ def get_keyword_definition():
 
     thread = Thread(get_definition, (keyword,), lambda res: res[0], ())
     thread.start()
-    definition = thread.join()
 
+    thread.stop()
+    definition = thread.join()
+    thread.stop_event.set()
     if definition:
         return definition, 200
     return 'Error - Keyword not found', 400
@@ -96,7 +105,10 @@ def document_summary(file_id):
 
     thread = Thread(get_document_summary, (file_id,), lambda res: res[0], ())
     thread.start()
+
+    thread.stop()
     summary = thread.join()
+    thread.stop_event.set()
     if summary:
         return summary, 200
     return 'Unable to find document', 400

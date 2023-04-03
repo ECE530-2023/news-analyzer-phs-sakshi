@@ -21,16 +21,26 @@ def upload_document():
     if 'file' not in request.files or request.files['file'].filename == '':
         #flash('No file part')
         return 'No file', 404
+
     file = request.files['file']
 
     if file and is_allowed_file_extension(file.filename):
-        file_id = upload_file_to_s3(file)
+        # file_id = upload_file_to_s3(file)
+        thread1 = Thread(upload_file_to_s3, (file, ), lambda _: None, ())
+        thread1.start()
+        thread1.stop()
+        thread1.stop_event.set()
+        file_id = thread1.join()
+
         #analyze_file(file, file_id)
         #implement threading
-        thread = Thread(analyze_file, (file, file_id), lambda _: None, ())
-        thread.start()
-        return '', 200
-    return '', 500
+
+        thread2 = Thread(analyze_file, (file, file_id), lambda _: None, ())
+        thread2.start()
+        thread2.stop()
+        thread2.stop_event.set()
+
+    return 'Error encountered', 500
 
 
 # @Input parameters - document to upload
@@ -52,10 +62,13 @@ def download_document():
         if not file_id or file_id not in get_user_file_ids(user_id):
             flash('File not found')
             return 'File not found', 404
+
         #file = get_file_by_file_id(file_id, user_id)
         thread = Thread(get_file_by_file_id, (file_id, user_id), lambda res: res[0], ())
         thread.start()
+        thread.stop()
         file = thread.join()
+        thread.stop_event.set()
         return file, 200
 
     except ValueError:

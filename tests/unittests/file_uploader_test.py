@@ -3,6 +3,7 @@ from unittest.mock import patch
 from src.FileUploader.upload_file import app
 from io import BytesIO
 
+
 class TestFileUpload(unittest.TestCase):
 
     @patch('src.FileUploader.upload_file.upload_file_to_s3', return_value='file_id')
@@ -14,7 +15,7 @@ class TestFileUpload(unittest.TestCase):
         data = {"file": (file, "test.txt")}
         # Mock a POST request with the file object
         with app.test_client() as client:
-            response = client.post('/upload', data=data, content_type='multipart/form-data')
+            response = client.post('/upload?stop=true', data=data, content_type='multipart/form-data')
 
         # Check that the response status code is 200
         self.assertEqual(response.status_code, 200)
@@ -49,7 +50,7 @@ class TestFileUpload(unittest.TestCase):
     def test_download_document_success(self, mock_get_file_by_file_id, mock_get_user_file_ids, mock_verify_token):
         # Mock a GET request with a valid fileId and token in the headers
         with app.test_client() as client:
-            response = client.get('/download?fileId=file_id', headers={'Authorization': 'Bearer token'})
+            response = client.get('/download?fileId=file_id&stop=true', headers={'Authorization': 'Bearer token'})
 
         # Check that the response status code is 200 and the file content is returned
         self.assertEqual(response.status_code, 200)
