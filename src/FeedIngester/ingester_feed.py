@@ -1,5 +1,8 @@
+import logging
+
 from werkzeug.utils import secure_filename
 import boto3
+from src.InputOutput.output import print_string
 
 access_key = 'AKIAUPEMIMSKUTBFY366'
 access_secret = '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'
@@ -11,7 +14,7 @@ s3 = boto3.client(
     aws_secret_access_key=access_secret
 )
 def upload_file_to_s3(file):
-    filename = secure_filename(file.filename)
+    # filename = secure_filename(file.filename)
     try:
         s3.upload_fileobj(
             file,
@@ -24,9 +27,14 @@ def upload_file_to_s3(file):
 
     except Exception as e:
         # This is a catch all exception, edit this part to fit your needs.
-        print("Something Happened: ", e)
+        print_string("Something Happened: "+ e)
+        logging.info("file not uploaded to S3 "+file.filename)
         return e
 
 
     # after upload file to s3 bucket, return filename of the uploaded file
+    print_string("file uploaded to S3")
     return file.filename
+
+def get_file_url(filename):
+    return '%s/%s/%s' % (s3.meta.endpoint_url, bucket_name, filename)

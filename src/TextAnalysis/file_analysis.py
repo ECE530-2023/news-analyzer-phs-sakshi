@@ -1,35 +1,13 @@
 """Module for file analysis"""
-from flask import request, flash
+from flask import request
 from src.TextAnalysis.text_analyzer_impl import get_definition, get_paragraphs_by_sentiment, get_paragraphs_by_keywords, \
     get_document_summary
-from src.FileUploader.file_uploader_impl import get_user_file_ids
-from text_analyzer_impl import analyze_file
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from src.InputOutput.output import print_string
 from src.main import app
 from src.Thread import Thread
 
-# @Input parameters - document to analyze
-# Response -
-# 200 - Successful
-# 400 - Bad Request
-# 415 - Unsupported Media type
-# 500 - Internal Server Error
-@app.route('/analyze/<string:file_id>', methods=['GET'])
-def analyze_document(file_id):
-    user_id = get_user_id()
-    if not file_id or file_id not in get_user_file_ids(user_id):
-        flash('File not found')
-        return 'File not found', 400
-    #file = analyze_file(file_id, user_id)
-
-    thread = Thread(analyze_file, (file_id, user_id), lambda res: res[0], ())
-    thread.start()
-    thread.stop()
-    file = thread.join()
-    thread.stop_event.set()
-    return file, 200
 
 # @Input parameters - keywords to match the paragraphs
 # Response -
@@ -77,7 +55,7 @@ def paragraphs_by_sentiment():
 # 200 - Successful - definition of the keyword
 # 400 - Bad Request - keyword not found
 # 500 - Internal Server Error
-@app.route('/keywordDefinition',methods=['GET'])
+@app.route('/keywordDefinition', methods=['GET'])
 def get_keyword_definition():
     args = request.args
     keyword = args.get('keyword')

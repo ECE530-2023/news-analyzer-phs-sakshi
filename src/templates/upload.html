@@ -1,0 +1,19 @@
+<body>
+{% if file_id %}
+    <p>Successfully uploaded file with File ID: {{ file_id }}</p>
+
+{% else %}
+
+<h1>Upload a document</h1>
+<form method="POST" enctype="multipart/form-data" action="/upload">
+    <input type="file" name="file">
+    <input type="submit" value="Upload">
+</form>
+<h1>Download a document</h1>
+<form method="GET" action="/download">
+    <input type="text" name="fileId" placeholder="Enter file ID">
+    <input type="submit" value="Download">
+</form>
+{% endif %}
+<a href="/uploader">&larr; Back</a>
+</body>

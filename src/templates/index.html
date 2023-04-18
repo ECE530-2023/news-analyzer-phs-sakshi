@@ -1,0 +1,32 @@
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>Welcome to Document Analyzer</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Welcome to Document Analyzer</h1>-->
+<!--<p>Please upload a document to begin analysis.</p>-->
+<!--<form action="/upload" method="POST" enctype="multipart/form-data">-->
+<!--    <input type="file" name="file">-->
+<!--    <input type="submit" value="Upload">-->
+<!--</form>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Document Analyzer</title>
+</head>
+<body>
+<h1>Document Analyzer</h1>
+<!--{% if user %}-->
+<!--<p>Welcome, {{ user['name'] }}!</p>-->
+<p><a href="/logout">Logout</a></p>
+<p><a href="{{url_for(upload)}}">Upload</a></p>
+<!--{% else %}-->
+<!--<p>Please <a href="/authorize">authorize</a> to access the application.</p>-->
+<!--{% endif %}-->
+</body>
+</html>

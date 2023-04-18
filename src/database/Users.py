@@ -1,6 +1,6 @@
 """Module for operating on users table"""
 
-from Query_Execution import execute_query
+from src.database.Query_Execution import execute_query
 from src.InputOutput.output import print_string
 
 

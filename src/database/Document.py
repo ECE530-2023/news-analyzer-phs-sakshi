@@ -12,33 +12,32 @@ def create_documents_table():
     create_document_table = '''CREATE TABLE IF NOT EXISTS document (
                                 doc_id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 doc_name TEXT NOT NULL,
-                                user_id INTEGER,
                                 doc_link TEXT NOT NULL,
-                                doc_text_link TEXT,
+                                doc_text TEXT,
                                 sentiment TEXT,
-                                date_uploaded timestamp,
+                                date_uploaded timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                 date_deleted TEXT,
-                                file_size INTEGER NOT NULL,
-                                FOREIGN KEY(user_id) REFERENCES users(user_id));'''
+                                file_size INTEGER NOT NULL
+                                );'''
 
     record = execute_query(create_document_table)
     if not record == False:
         print_string("Document table not created")
 
-    row_count = execute_query('''SELECT COUNT(*) from document''')[0][0]
-    if row_count == 0:
-        document_table_insert = '''INSERT INTO document (doc_name,user_id,doc_link,file_size) VALUES
-                                                        ('doc1',1,'doc1@link1.com',200),
-                                                        ('doc2',1,'doc2@link2.com',300),
-                                                        ('doc3',2,'doc3@link3.com',200)'''
+    # row_count = execute_query('''SELECT COUNT(*) from document''')[0][0]
+    # if row_count == 0:
+    #     document_table_insert = '''INSERT INTO document (doc_name,user_id,doc_link,file_size) VALUES
+    #                                                     ('doc1','doc1@link1.com',200),
+    #                                                     ('doc2','doc2@link2.com',300),
+    #                                                     ('doc3','doc3@link3.com',200)'''
+    #
+    #     if execute_query(document_table_insert) == False:
+    #         print_string("Insert failed in document table")
 
-        if execute_query(document_table_insert) == False:
-            print_string("Insert failed in document table")
-
-def insert_doc_link(doc_name,user_id,doc_link,file_size):
-    document_table_insert = '''INSERT INTO document (doc_name,user_id,doc_link,file_size) VALUES
-                                                        (?,?,?,?)'''
-    id = execute_insert_query(document_table_insert,(doc_name, user_id, doc_link, file_size))
+def insert_doc(doc_name,doc_link,doc_text,sentiment, file_size):
+    document_table_insert = '''INSERT INTO document (doc_name,doc_link,doc_text,sentiment, file_size) VALUES
+                                                        (?,?,?,?,?)'''
+    id = execute_insert_query(document_table_insert, (doc_name, doc_link, doc_text, sentiment, file_size))
     if id == False:
         print_string("Insert failed in document table")
         return False
@@ -52,29 +51,22 @@ def update_doc_sentiment(file_id, senti):
     print_string("sentiment of file updated successfully")
     return True
 
-def fetch_all_user_file_ids(user_id):
-    query = '''SELECT doc_id from document where user_id = ?'''
-    records = execute_query(query,user_id)
-    if records == False:
-        print_string("Unable to get file ids for the user " + str(user_id))
-        return False
-    return records
+def fetch_all_user_file_ids():
+    query = '''SELECT doc_name from document'''
+    records = execute_query(query)
+    return [x[0] for x in records]
 
-def get_file(file_id, user_id):
-    query = '''SELECT doc_link from document where user_id = ? AND doc_id = ?'''
-    url = execute_query(query, user_id, file_id)
+def get_file(file_id):
+    query = '''SELECT doc_link from document where doc_name = ?'''
+    url = execute_query(query, file_id)
     if url == False:
         print_string("File not found")
         return False
     return download_file(url)
 
 def get_text_of_file(file_id):
-    query = '''SELECT doc_text_link from document where doc_id = ?'''
-    url = execute_query(query, file_id)
-    if url == False:
-        print_string("File not found")
-        return False
-    return requests.get(url).content
+    query = '''SELECT doc_text from document where doc_name = ?'''
+    return execute_query(query, file_id)
 
 def download_file(url):
     response = requests.get(url)

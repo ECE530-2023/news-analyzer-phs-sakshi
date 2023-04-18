@@ -20,17 +20,12 @@ def create_table_keywords():
     if record == False:
         print_string("Cannot create keywords table")
 
-def insert_keywords(keyword,para_id,doc_id,definition):
+def insert_keywords_by_para(keyword,para_id,doc_id,definition):
     insert_keywords_query = ''' INSERT OR IGNORE INTO KEYWORDS (keyword, para_id,doc_id,definition) 
                                 VALUES(?,?,?,?)'''
-    if execute_query(insert_keywords_query,(keyword,para_id,doc_id,definition)) == False:
-        print_string("Insert failed in keyword table")
+    return execute_query(insert_keywords_query, (keyword, para_id, doc_id, definition))
 
 def insert_keywords(keyword,doc_id,definition):
     insert_keywords_query = ''' INSERT OR IGNORE INTO KEYWORDS (keyword,doc_id,definition) 
                                 VALUES(?,?,?)'''
-    id = execute_insert_query(insert_keywords_query,(keyword,doc_id,definition))
-    if id == False:
-        print_string("Insert failed in keyword table")
-        return False
-    return id
+    return execute_insert_query(insert_keywords_query,(keyword,doc_id,definition))
