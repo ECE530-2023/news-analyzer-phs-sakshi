@@ -1,6 +1,4 @@
 import logging
-
-from werkzeug.utils import secure_filename
 import boto3
 from src.InputOutput.output import print_string
 
@@ -13,11 +11,11 @@ s3 = boto3.client(
     aws_access_key_id=access_key,
     aws_secret_access_key=access_secret
 )
-def upload_file_to_s3(file):
+def upload_file_to_s3(file_data, file):
     # filename = secure_filename(file.filename)
     try:
         s3.upload_fileobj(
-            file,
+            file_data,
             bucket_name,
             file.filename,
             ExtraArgs={

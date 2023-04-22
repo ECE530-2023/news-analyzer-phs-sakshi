@@ -1,8 +1,8 @@
 """Module for uploading file"""
 import logging
-
-from flask import flash, request, render_template
-
+import io
+from flask import flash, request, render_template, send_file
+import requests
 from src.FeedIngester.ingester_feed import upload_file_to_s3
 from src.FileUploader.file_uploader_impl import get_user_file_ids, is_allowed_file_extension, get_file_by_file_id
 from src.InputOutput.output import print_string
@@ -39,8 +39,10 @@ def upload_document():
             # thread2.start()
             # thread2.stop()
             # thread2.stop_event.set()
-
-            analyze_file(file, file.filename)
+            file_contents = file.read()
+            upload_file_to_s3(io.BytesIO(file_contents), file)
+            analyze_file(io.BytesIO(file_contents), file.filename)
+            # analyze_file(file, file.filename)
 
         return render_template('upload.html', file_id=file.filename)
 
@@ -67,12 +69,12 @@ def download_document():
             flash('File not found')
             return 'File not found', 404
 
-        #file = get_file_by_file_id(file_id, user_id)
-        thread = Thread(get_file_by_file_id, (file_id, ), lambda res: res[0], ())
-        thread.start()
-        thread.stop()
-        file = thread.join()
-        thread.stop_event.set()
+        file = get_file_by_file_id(file_id)
+        # thread = Thread(get_file_by_file_id, (file_id, ), lambda res: res[0], ())
+        # thread.start()
+        # thread.stop()
+        # file = thread.join()
+        # thread.stop_event.set()
         return file, 200
 
     except ValueError:

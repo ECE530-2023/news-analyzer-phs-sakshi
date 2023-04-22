@@ -28,4 +28,6 @@ def create_users_table():
 
 
 
-
+def addUser(email):
+    query = '''INSERT OR IGNORE INTO users (permission_set,email) VALUES ('RW',?)'''
+    execute_query(query, (email, ))

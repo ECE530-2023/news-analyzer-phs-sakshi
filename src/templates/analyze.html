@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analyze Files</title>
+    <style>
+        .topnav {
+            position: absolute;
+            top: 20px;
+            right: 10px;
+        }
+
+        .topnav button {
+            margin-top: 10px;
+            margin-right: 10px;
+            float: right;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<h1>Analyze Files</h1>
+{% if not_found %}
+<h3>File not found</h3>
+<a href="/analyze">&larr; Back</a>
+{% elif file_analyzed %}
+<h3>Document name</h3>
+{{name}}
+<h3>Document link</h3>
+{{link}}
+<h3>Keywords</h3>
+{{keywords}}
+<h3>Summary</h3>
+{{summary}}
+<h3>Sentiment</h3>
+{{sentiment}}
+<h3>Date Uploaded</h3>
+{{date_uploaded}}
+<h3>File size</h3>
+{{size}}
+<a href="/analyze">&larr; Back</a>
+{% else %}
+<form method="POST" action="/file_analysis">
+    <input type="text" name="fileId" placeholder="Enter file name">
+    <input type="submit">
+</form>
+<a href="/index">&larr; Back</a>
+{% endif %}
+
+<form method="post" action="{{ url_for('logout') }}">
+    <button type="submit">Logout</button>
+</form>
+<div class="topnav">
+    <form method="post" action="/logout">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+</body>
+</html>

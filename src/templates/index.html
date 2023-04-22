@@ -1,32 +1,51 @@
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--<head>-->
-<!--    <title>Welcome to Document Analyzer</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--<h1>Welcome to Document Analyzer</h1>-->
-<!--<p>Please upload a document to begin analysis.</p>-->
-<!--<form action="/upload" method="POST" enctype="multipart/form-data">-->
-<!--    <input type="file" name="file">-->
-<!--    <input type="submit" value="Upload">-->
-<!--</form>-->
-<!--</body>-->
-<!--</html>-->
+<style>
+    .topnav {
+        position: absolute;
+        top: 20px;
+        right: 10px;
+    }
 
+    .topnav button {
+        margin-top: 10px;
+        margin-right: 10px;
+        float: right;
+        font-size: 16px;
+    }
+</style>
+{% block content %}
+<div class="container mt-3">
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Document Analyzer</title>
-</head>
-<body>
-<h1>Document Analyzer</h1>
-<!--{% if user %}-->
-<!--<p>Welcome, {{ user['name'] }}!</p>-->
-<p><a href="/logout">Logout</a></p>
-<p><a href="{{url_for(upload)}}">Upload</a></p>
-<!--{% else %}-->
-<!--<p>Please <a href="/authorize">authorize</a> to access the application.</p>-->
-<!--{% endif %}-->
-</body>
-</html>
+    {% if user %}
+    Welcome {{user}}!
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" href="uploader" data-toggle="tab">Upload/Download Files</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="analyze" data-toggle="tab">Analyze Files</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="search" data-toggle="tab">Search Keyword Definition</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="upload">
+            <!-- upload/download files form -->
+        </div>
+        <div class="tab-pane" id="analyze">
+            <!-- file analysis form -->
+        </div>
+        <div class="tab-pane" id="search">
+            <!-- keyword search form -->
+        </div>
+    </div>
+</div>
+
+<div class="topnav">
+    <form method="post" action="/logout">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+{% endif %}
+{% endblock %}
