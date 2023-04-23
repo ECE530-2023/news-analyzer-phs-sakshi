@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Document Uploader</title>
+    <style>
+        .topnav {
+            position: absolute;
+            top: 20px;
+            right: 10px;
+        }
+
+        .topnav button {
+            margin-top: 10px;
+            margin-right: 10px;
+            float: right;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+{% if user %}
+<p>Welcome {{ user|e }}!</p>
+<div class="topnav">
+    {{user}}
+    <form method="post" action="/logout">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+{% else %}
+<p>Welcome!</p>
+<p><a href="{{ url_for('google.login') }}">Login with Google</a></p>
+{% endif %}
+</body>
+</html>
