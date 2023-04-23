@@ -19,3 +19,4 @@ pyOpenSSL==23.0.0
 Flask-Login==0.6.2
 Werkzeug==2.2.3
 flask-dance==6.2.0
+textract==1.6.5
