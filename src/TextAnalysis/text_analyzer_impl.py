@@ -37,18 +37,18 @@ def analyze_file(file, file_id):
     file_extension = get_file_extension(file_id)
     if file_extension:
         file_data = convert_file_to_text(file, file_extension)
-    if file_data:
-        find_keywords_file(file_data, file_id)
-        logging.info("found keywords ")
-        tag_document_by_keyword(file_data, file_id)
-        logging.info("tagged document ")
-        sentiment = analyze_file_sentiment(file_data, file_id)
-        logging.info("sentiment analysis complete ")
-        file_size = len(file_data)
-        summary = get_document_summary(file_data)
-        insert_doc(file_id, get_file_url(file_id), file_data, sentiment, file_size, summary)
-        logging.info("file saved successfully ")
-        return file_extension
+        if file_data:
+            find_keywords_file(file_data, file_id)
+            logging.info("found keywords ")
+            tag_document_by_keyword(file_data, file_id)
+            logging.info("tagged document ")
+            sentiment = analyze_file_sentiment(file_data, file_id)
+            logging.info("sentiment analysis complete ")
+            file_size = len(file_data)
+            summary = get_document_summary(file_data)
+            insert_doc(file_id, get_file_url(file_id), file_data, sentiment, file_size, summary)
+            logging.info("file saved successfully ")
+            return file_extension
     else:
         raise Exception
 
