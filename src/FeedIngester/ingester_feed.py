@@ -1,22 +1,28 @@
+""" Module for uploading and saving file to Amazon S3 bucket"""
+
 import logging
 import boto3
-from src.InputOutput.output import print_string
 
-access_key = 'AKIAUPEMIMSKUTBFY366'
-access_secret = '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'
-bucket_name = 'bucket1-sep'
+from configuration.config import ACCESS_KEY, ACCESS_SECRET, BUCKET_NAME
+from src.InputOutput.output import print_string
 
 s3 = boto3.client(
     "s3",
-    aws_access_key_id=access_key,
-    aws_secret_access_key=access_secret
+    aws_access_key_id=ACCESS_KEY,
+    aws_secret_access_key=ACCESS_SECRET
 )
 def upload_file_to_s3(file_data, file):
+    """
+
+    :param file_data: data of the file to uplaod
+    :param file: name of the file to uplaod
+    :return: name of the uploaded file
+    """
     # filename = secure_filename(file.filename)
     try:
         s3.upload_fileobj(
             file_data,
-            bucket_name,
+            BUCKET_NAME,
             file.filename,
             ExtraArgs={
                 "ContentType": file.content_type
@@ -25,7 +31,7 @@ def upload_file_to_s3(file_data, file):
 
     except Exception as e:
         # This is a catch all exception, edit this part to fit your needs.
-        print_string("Something Happened: "+ e)
+        print_string("Something Happened: " + str(e))
         logging.info("file not uploaded to S3 "+file.filename)
         return e
 
@@ -35,4 +41,7 @@ def upload_file_to_s3(file_data, file):
     return file.filename
 
 def get_file_url(filename):
-    return '%s/%s/%s' % (s3.meta.endpoint_url, bucket_name, filename)
+    """ gets the url where the file while be stored in S3"""
+    if filename:
+        return '%s/%s/%s' % (s3.meta.endpoint_url, BUCKET_NAME, filename)
+    raise ValueError('Invalid file name')

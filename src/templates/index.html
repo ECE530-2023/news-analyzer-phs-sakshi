@@ -16,7 +16,7 @@
 <div class="container mt-3">
 
     {% if user %}
-    Welcome {{user}}!
+    Welcome {{user|e}}!
 
     <ul class="nav nav-tabs">
         <li class="nav-item">
@@ -43,6 +43,7 @@
 </div>
 
 <div class="topnav">
+    {{user}}
     <form method="post" action="/logout">
         <button type="submit">Logout</button>
     </form>

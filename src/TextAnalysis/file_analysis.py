@@ -1,12 +1,13 @@
 """Module for file analysis"""
-from flask import request, render_template
+import threading
+
+from flask import request, render_template, abort
+from flask_login import current_user
 
 from src.FileUploader.file_uploader_impl import get_user_file_ids
-from src.TextAnalysis.text_analyzer_impl import get_definition, get_paragraphs_by_sentiment, get_paragraphs_by_keywords, \
+from src.TextAnalysis.text_analyzer_impl import get_definition, \
+    get_paragraphs_by_sentiment, get_paragraphs_by_keywords, \
     get_document_summary, get_file_info
-from google.oauth2 import id_token
-from google.auth.transport import requests
-from src.InputOutput.output import print_string
 from src.app import app
 from src.Thread import Thread
 from src.database.Document import get_text_of_file
@@ -19,6 +20,7 @@ from src.database.Document import get_text_of_file
 # 500 - Internal Server Error
 @app.route('/paragraphsByKeyword/<keyword>', methods=['GET'])
 def paragraphs_by_keywords(keyword):
+    """ search for paragraphs with given keywords"""
     #paragraphs = get_paragraphs_by_keywords(keyword)
 
     thread = Thread(get_paragraphs_by_keywords, (keyword,), lambda res: res[0], ())
@@ -38,6 +40,7 @@ def paragraphs_by_keywords(keyword):
 # 500 - Internal Server Error
 @app.route('/paragraphsBySentiment', methods=['GET'])
 def paragraphs_by_sentiment():
+    """ search for paragraphs with given sentiment"""
     args = request.args
     sentiment = args.get('sentiment')
     if sentiment not in ['positive', 'negative', 'neutral']:
@@ -60,6 +63,7 @@ def paragraphs_by_sentiment():
 # 500 - Internal Server Error
 @app.route('/keywordDefinition', methods=['POST'])
 def get_keyword_definition():
+    """ get the definition of a keyword"""
     keyword = request.form['keyword']
     # keyword = args.get('keyword')
     definition = get_definition(keyword)
@@ -71,19 +75,21 @@ def get_keyword_definition():
     # definition = thread.join()
     # thread.stop_event.set()
     if definition:
-        return render_template('search.html', definition=keyword+definition)
-    return render_template('search.html')
+        return render_template('search.html', definition=keyword+definition, user=current_user.id)
+    return render_template('search.html', user=current_user.id)
 
 # @Input parameters - file id of the file to summarize
 # Response -
 # 200 - Successful - summary of the file
 # 400 - Bad Request - file not found
 # 500 - Internal Server Error
-@app.route('/documentSummary/<string:file_id>',methods=['GET'])
-def document_summary(file_id):
-    # summary = get_document_summary(file_id)
+@app.route('/documentSummary',methods=['POST'])
+def document_summary():
+    """get the summary of the document"""
+    file_id = request.form['file_id']
     text = get_text_of_file(file_id)
-    thread = Thread(get_document_summary, (text,), lambda res: res[0], ())
+    stop_event = threading.Event()
+    thread = Thread(get_document_summary, (text, ), lambda res: res[0], ())
     thread.start()
 
     thread.stop()
@@ -94,20 +100,17 @@ def document_summary(file_id):
     return 'Unable to find document', 400
 @app.route('/file_analysis', methods=['POST'])
 def analyze_complete_file():
+    """ analyse the file - calculate keywords, summary, sentiment"""
+    if 'fileId' not in request.form:
+        abort(400, 'File ID not found')
     file_id = request.form['fileId']
     if not file_id or file_id not in get_user_file_ids():
         return render_template('analyze.html', not_found=True)
-    name, link, sentiment, date, size, summary, keywords = get_file_info(file_id)
-    return render_template('analyze.html', file_analyzed=True, name=name, link=link, date_uploaded=date, size=size,keywords=keywords, summary=summary, sentiment=sentiment)
-
-def get_user_id():
     try:
-        token = request.headers.get('Authorization').split(' ')[1]
-        idinfo = id_token.verify_oauth2_token(token, requests.Request())
-        user_id = idinfo['sub']
-        return user_id
-    except ValueError:
-        # Invalid token
-        print_string("couldn't verify user")
-        return 'Unauthorized', 401
+        name, link, sentiment, date, size, summary, keywords = get_file_info(file_id)
+        return render_template('analyze.html', file_analyzed=True, name=name, link=link, date_uploaded=date, size=size,keywords=keywords, summary=summary, sentiment=sentiment, user=current_user.id)
+    except Exception as e:
+        raise Exception(500, str(e))
+
+
 

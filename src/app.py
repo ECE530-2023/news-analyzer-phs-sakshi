@@ -1,20 +1,20 @@
-from flask import Flask
-from flask_dance.contrib.google import make_google_blueprint, google
 import os
+from flask import Flask
+from flask_dance.contrib.google import make_google_blueprint
+
 
 from flask_login import LoginManager
+
+from configuration.config import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 
 app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-# app.config['GOOGLE_CLIENT_ID'] = '427430065548-1ldttecl3sapmnb14ho8vieh41dsi7jf.apps.googleusercontent.com'
-# app.config['GOOGLE_CLIENT_SECRET'] = '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'
-# app.config['GOOGLE_DISCOVERY_URL'] = 'https://accounts.google.com/.well-known/openid-configuration'
 
 google_blueprint = make_google_blueprint(
-    client_id="427430065548-1ldttecl3sapmnb14ho8vieh41dsi7jf.apps.googleusercontent.com",
-    client_secret="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",
+    client_id=GOOGLE_CLIENT_ID,
+    client_secret=GOOGLE_CLIENT_SECRET,
     scope=["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"],
     redirect_url="/index"
 )

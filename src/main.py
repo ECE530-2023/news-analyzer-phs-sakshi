@@ -1,4 +1,4 @@
-from flask import  render_template, redirect, url_for
+from flask import render_template, redirect, url_for
 from flask_dance.contrib.google import google
 from flask_login import logout_user, login_user, login_required, current_user
 import requests
@@ -19,27 +19,29 @@ def home():
 def file_analysis():
     user_id = None
     if current_user.is_authenticated:
-        user_id = current_user.id
         return analyze_complete_file()
     return render_template('unauthorized_access.html')
 
 @login_required
 @app.route('/upload', methods=['POST'])
 def upload():
-    if current_user:
+    user_id = None
+    if current_user.is_authenticated:
         return upload_document()
     return render_template('unauthorized_access.html')
 
 @login_required
 @app.route('/uploader')
 def uploader():
-    if current_user:
-        return render_template('upload.html')
+    user_id = None
+    if current_user.is_authenticated:
+        user_id = current_user.id
+        return render_template('upload.html', user=user_id)
     return render_template('unauthorized_access.html')
 @login_required
 @app.route('/download', methods=['GET'])
 def download():
-    if current_user:
+    if current_user.is_authenticated:
         return download_document()
     return render_template('unauthorized_access.html')
 
@@ -49,14 +51,18 @@ def unauthorized():
 @login_required
 @app.route('/search', methods=['GET'])
 def search():
-    if current_user:
-        return render_template('search.html', user=current_user)
+    user_id = None
+    if current_user.is_authenticated:
+        user_id = current_user.id
+        return render_template('search.html', user=user_id)
     return render_template('unauthorized_access.html')
 
 @login_required
 @app.route('/keywordDefinition', methods=['POST'])
 def search_keyword_def():
-    if current_user:
+    user_id = None
+    if current_user.is_authenticated:
+        user_id = current_user.id
         return get_keyword_definition()
     return render_template('unauthorized_access.html')
 @app.route("/login/google")
@@ -78,8 +84,8 @@ def logout():
     return redirect(url_for("home"))
 
 @login_manager.user_loader
-def load_user(user_email):
-    return user_email
+def load_user(user_id):
+    return User(user_id)
 @login_required
 @app.route("/index")
 def dashboard():
@@ -93,9 +99,14 @@ def dashboard():
             return render_template('index.html', user=email)
         except Exception:
             return render_template('unauthorized_access.html')
+@login_required
 @app.route("/analyze")
 def analyze():
-    return render_template('analyze.html')
+    user_id = None
+    if current_user.is_authenticated:
+        user_id = current_user.id
+        return render_template('analyze.html', user=user_id)
+    return render_template('unauthorized_access.html')
 
 
 if __name__ == '__main__':

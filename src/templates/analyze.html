@@ -29,31 +29,43 @@
 <h3>Document link</h3>
 {{link}}
 <h3>Keywords</h3>
-{{keywords}}
+{{keywords|e}}
 <h3>Summary</h3>
-{{summary}}
+{{summary|e}}
 <h3>Sentiment</h3>
-{{sentiment}}
+{{sentiment|e}}
 <h3>Date Uploaded</h3>
-{{date_uploaded}}
+{{date_uploaded|e}}
 <h3>File size</h3>
-{{size}}
+{{size|e}}
 <a href="/analyze">&larr; Back</a>
 {% else %}
-<form method="POST" action="/file_analysis">
+
+<form name="file_analysis_form" method="POST" action="/file_analysis" onsubmit="return validateInput()">
     <input type="text" name="fileId" placeholder="Enter file name">
     <input type="submit">
 </form>
 <a href="/index">&larr; Back</a>
 {% endif %}
 
-<form method="post" action="{{ url_for('logout') }}">
-    <button type="submit">Logout</button>
-</form>
 <div class="topnav">
+    {{user|e}}
     <form method="post" action="/logout">
         <button type="submit">Logout</button>
     </form>
 </div>
 </body>
 </html>
+
+<script>
+    function validateInput() {
+        var input = document.forms["file_analysis_form"]["fileId"].value;
+        var regex = /^[a-zA-Z0-9]+$/; // only allow alphanumeric characters
+        if (!input.match(regex)) {
+            alert("Input must only contain alphanumeric characters.");
+            return false;
+        }
+    }
+</script>
+
+

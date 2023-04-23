@@ -18,3 +18,4 @@ oauthlib==3.2.2
 pyOpenSSL==23.0.0
 Flask-Login==0.6.2
 Werkzeug==2.0.0
+flask-dance==6.2.0
