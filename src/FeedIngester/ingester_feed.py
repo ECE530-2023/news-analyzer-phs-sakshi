@@ -2,7 +2,6 @@
 
 import logging
 import boto3
-
 from configuration.config import ACCESS_KEY, ACCESS_SECRET, BUCKET_NAME
 from src.InputOutput.output import print_string
 
