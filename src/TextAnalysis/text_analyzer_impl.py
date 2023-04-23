@@ -50,7 +50,7 @@ def analyze_file(file, file_id):
             logging.info("file saved successfully ")
             return file_extension
     else:
-        raise Exception
+        return False
 
 
 def find_keywords_file(file, file_id):
