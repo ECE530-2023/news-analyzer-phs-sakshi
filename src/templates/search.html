@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Keyword</title>
+    <style>
+        .topnav {
+            position: absolute;
+            top: 20px;
+            right: 10px;
+        }
+
+        .topnav button {
+            margin-top: 10px;
+            margin-right: 10px;
+            float: right;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<h1>Search Keyword</h1>
+<form name="search_form" method="POST" action="/keywordDefinition" onsubmit="return validateInput()">
+    <label for="keyword">Enter Keyword:</label>
+    <input type="text" id="keyword" name="keyword">
+    <button type="submit">Search</button>
+</form>
+{% if definition %}
+<h2>Definition:</h2>
+<p>{{ definition|e }}</p>
+<a href="/search">&larr; Back</a>
+
+{% else %}
+<a href="/index">&larr; Back</a>
+{% endif %}
+<br>
+<div class="topnav">
+    {{user}}
+    <form method="post" action="/logout">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
+<script>
+    function validateInput() {
+        var input = document.forms["search_form"]["keyword"].value;
+        var regex = /^[a-zA-Z0-9]+$/; // only allow alphanumeric characters
+        if (!input.match(regex)) {
+            alert("Input must only contain alphanumeric characters.");
+            return false;
+        }
+    }
+</script>

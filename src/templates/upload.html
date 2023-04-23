@@ -1,19 +1,128 @@
-<body>
-{% if file_id %}
-    <p>Successfully uploaded file with File ID: {{ file_id }}</p>
+<head>
+    <style>
+        .spinner-border {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            vertical-align: text-bottom;
+            border: .25em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            -webkit-animation: spinner-border .75s linear infinite;
+            animation: spinner-border .75s linear infinite;
+        }
 
+        @-webkit-keyframes spinner-border {
+            to { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+        }
+
+        @keyframes spinner-border {
+            to { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+        }
+        .topnav {
+            position: absolute;
+            top: 20px;
+            right: 10px;
+        }
+
+        .topnav button {
+            margin-top: 10px;
+            margin-right: 10px;
+            float: right;
+            font-size: 16px;
+        }
+
+    </style>
+    <script>
+        function validateForm() {
+            var filesInput = document.getElementById('file');
+            var files = filesInput['files'];
+            var allowedExtensions = /(\.pdf|\.png|\.jpg|\.jpeg|\.csv|\.doc|\.txt)$/i;
+
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var filePath = file.name;
+                if (!allowedExtensions.exec(filePath)) {
+                    document.getElementById('fileError').innerHTML = 'Invalid file type. Allowed types: pdf, png, jpg, jpeg, csv, doc, txt';
+                    filesInput.value = '';
+                    return false;
+                }
+            }
+
+            document.getElementById('fileError').innerHTML = '';
+            showSpinner();
+            return true;
+        }
+
+        document.getElementById('file').addEventListener('change', function() {
+            validateForm();
+        });
+
+
+
+        function showSpinner() {
+            document.getElementById("spinner").style.display = "block";
+        }
+
+        function validateInput() {
+            var input = document.forms["download_form"]["fileId"].value;
+            var regex = /^[a-zA-Z0-9]+$/; // only allow alphanumeric characters
+            if (!input.match(regex)) {
+                alert("Input must only contain alphanumeric characters.");
+                return false;
+            }
+        }
+
+    </script>
+
+</head>
+<body>
+{% if file_ids %}
+<p>Successfully uploaded {{ file_ids.length }} file(s) with the following File ID(s):</p>
+<ul>
+    {% for file_id in file_ids %}
+    <li>{{ file_id }}</li>
+    {% endfor %}
+</ul>
+<a href="/uploader">&larr; Back</a>
 {% else %}
 
-<h1>Upload a document</h1>
-<form method="POST" enctype="multipart/form-data" action="/upload">
-    <input type="file" name="file">
+<!--<h1>Upload a document</h1>-->
+<!--<form method="POST" enctype="multipart/form-data" action="/upload" onsubmit="return validateForm();">-->
+<!--    <input type="file" name="file" id="file" accept=".pdf, .png, .jpg, .jpeg, .csv, .doc, .txt">-->
+<!--    <input type="submit" value="Upload">-->
+<!--    <div id="spinner" style="display: none;">-->
+<!--        <div class="spinner-border" role="status">-->
+<!--&lt;!&ndash;            <span class="sr-only">Loading...</span>&ndash;&gt;-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <span class="error" id="fileError"></span>-->
+<!--</form>-->
+
+<h1>Upload documents</h1>
+<form method="POST" enctype="multipart/form-data" action="/upload" onsubmit="return validateForm()">
+    <input type="file" name="files[]" id="file" accept=".pdf, .png, .jpg, .jpeg, .csv, .doc, .txt" multiple>
     <input type="submit" value="Upload">
+    <div id="spinner" style="display: none;">
+        <div class="spinner-border" role="status">
+        </div>
+    </div>
+    <span class="error" id="fileError"></span>
 </form>
+
 <h1>Download a document</h1>
-<form method="GET" action="/download">
+<form name="download_form" method="GET" action="/download" onsubmit="return validateInput()">
     <input type="text" name="fileId" placeholder="Enter file ID">
     <input type="submit" value="Download">
 </form>
+<a href="/index">&larr; Back</a>
 {% endif %}
-<a href="/uploader">&larr; Back</a>
+
+
+<div class="topnav">
+    {{user}}
+    <form method="post" action="/logout">
+        <button type="submit">Logout</button>
+    </form>
+</div>
 </body>

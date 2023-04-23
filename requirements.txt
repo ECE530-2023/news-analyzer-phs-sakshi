@@ -1,4 +1,4 @@
-beautifulsoup4==4.11.1
+beautifulsoup4==4.8.0
 boto3==1.26.89
 docx==0.2.4
 Flask==2.2.3
@@ -17,4 +17,6 @@ moto==4.1.4
 oauthlib==3.2.2
 pyOpenSSL==23.0.0
 Flask-Login==0.6.2
-Werkzeug==2.0.0
+Werkzeug==2.2.3
+flask-dance==6.2.0
+textract==1.6.5

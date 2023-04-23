@@ -1,9 +1,6 @@
 """tests text analyzer module"""
-import copy
 import logging
-from io import BytesIO
 
-import PyPDF2
 import pypdf
 import pytesseract
 from PIL import Image
@@ -14,18 +11,16 @@ import requests
 from bs4 import BeautifulSoup
 from textblob import TextBlob
 import nltk
-from nltk.corpus import stopwords as stp, stopwords
+from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
 from nltk.tokenize import sent_tokenize
 from heapq import nlargest
 import string
-from src.FeedIngester.ingester_feed import upload_file_to_s3
 
 
-from src.FileUploader.file_uploader_impl import get_file_extension, get_file_size
-from src.InputOutput.output import print_string
-from src.database.Document import update_doc_sentiment, get_text_of_file, insert_doc
+from src.FileUploader.file_uploader_impl import get_file_extension
+from src.database.Document import update_doc_sentiment, insert_doc, get_file_by_id
 from src.database.Keywords import insert_keywords,insert_keywords_by_para
 from src.database.Paragraphs import insert_paragraph, update_para_sentiment, get_para_by_keyword
 from src.database.Paragraphs import get_para_by_sentiment
@@ -39,19 +34,23 @@ def analyze_file(file, file_id):
     :param file: file to analyze
     :return: boolean - True if file was analyzed successfully
     """
-    x = file
-    file_data = convert_file_to_text(file)
-    find_keywords_file(file_data, file_id)
-    logging.info("found keywords ")
-    tag_document_by_keyword(file_data, file_id)
-    logging.info("tagged document ")
-    sentiment = analyze_file_sentiment(file_data, file_id)
-    logging.info("sentiment analysis complete ")
-    file_size = len(file_data)
-    upload_file_to_s3(x)
-    insert_doc(file_id, get_file_url(file_id), file_data, sentiment, file_size)
-    logging.info("file saved successfully ")
-    return True
+    file_extension = get_file_extension(file_id)
+    if file_extension:
+        file_data = convert_file_to_text(file, file_extension)
+        if file_data:
+            find_keywords_file(file_data, file_id)
+            logging.info("found keywords ")
+            tag_document_by_keyword(file_data, file_id)
+            logging.info("tagged document ")
+            sentiment = analyze_file_sentiment(file_data, file_id)
+            logging.info("sentiment analysis complete ")
+            file_size = len(file_data)
+            summary = get_document_summary(file_data)
+            insert_doc(file_id, get_file_url(file_id), file_data, sentiment, file_size, summary)
+            logging.info("file saved successfully ")
+            return file_extension
+    else:
+        return False
 
 
 def find_keywords_file(file, file_id):
@@ -90,9 +89,9 @@ def analyze_file_sentiment(file, file_id):
     """ analyzes the text present in a file"""
     blob = TextBlob(file)
     sentiment = blob.sentiment.polarity
-    if sentiment < -1.0:
+    if sentiment < 0.0:
         sentiment = 'NEGATIVE'
-    elif sentiment > 1.0:
+    elif sentiment > 0.5:
         sentiment = 'POSITIVE'
     else:
         sentiment = 'NEUTRAL'
@@ -110,14 +109,13 @@ def analyze_paragraph_sentiment(para_id, para, file_id):
         sentiment = 'NEUTRAL'
     update_para_sentiment(file_id, sentiment, para_id)
     return sentiment
-def convert_file_to_text(file):
+def convert_file_to_text(file, file_extension):
     """
     Extract text from the file based on its extension.
     """
-    file_extension = get_file_extension(file.filename)
 
     if file_extension == 'pdf':
-        pdf_reader = PyPDF2.PdfReader(BytesIO(file.read()))
+        pdf_reader = pypdf.PdfReader(file)
         text = ''
         for page_num in range(len(pdf_reader.pages)):
             page = pdf_reader.pages[page_num]
@@ -130,7 +128,7 @@ def convert_file_to_text(file):
         return text.decode('utf-8')
 
 def convert_pdf_to_text(file):
-    pdf_reader = PyPDF2.PdfReader(file)
+    pdf_reader = pypdf.PdfReader(file)
     text = ''
     for page in pdf_reader.pages:
         text += page.extract_text()
@@ -191,9 +189,9 @@ def get_definition(keyword):
     return keyword
 
 
-def get_document_summary(file_id):
+def get_document_summary(text):
     """ returns the summary of a file"""
-    text = get_text_of_file(file_id)
+    # text = get_text_of_file(file_id)
     # Tokenize the document text into individual sentences
     sentences = sent_tokenize(text)
     word_frequencies = {}
@@ -233,3 +231,6 @@ def get_paragraphs_by_sentiment(sentiment):
 def get_paragraphs_by_keywords(keyword):
     """returns all paragraphs associated with a keyword"""
     return get_para_by_keyword(keyword)
+
+def get_file_info(file_id):
+    return get_file_by_id(file_id)
