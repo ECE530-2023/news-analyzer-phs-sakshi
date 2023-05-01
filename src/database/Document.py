@@ -78,7 +78,8 @@ def download_file(url):
 
 def get_file_by_id(file_id):
     query = '''SELECT doc.doc_name, doc.doc_link,doc.sentiment, doc.date_uploaded,doc.file_size,doc.summary FROM documents AS doc where doc.doc_name = ?'''
-    result = execute_query(query, (file_id, ))
+    result = execute_query(query, (file_id, ))[0]
     keywords = get_keywords_by_file_name(file_id)
-    val = [y for x in result for y in x] + [keywords]
+    val = [x for x in result]
+    val.append(keywords)
     return val

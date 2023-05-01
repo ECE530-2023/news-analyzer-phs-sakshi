@@ -186,7 +186,7 @@ def get_definition(keyword):
     if definition_div:
         definition = definition_div.text.strip()
         return definition
-    return keyword
+    return ' '
 
 
 def get_document_summary(text):

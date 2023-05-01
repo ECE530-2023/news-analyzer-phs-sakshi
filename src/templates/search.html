@@ -44,7 +44,7 @@
 <script>
     function validateInput() {
         var input = document.forms["search_form"]["keyword"].value;
-        var regex = /^[a-zA-Z0-9]+$/; // only allow alphanumeric characters
+        var regex = /^[a-zA-Z0-9 ]+$/; // only allow alphanumeric characters
         if (!input.match(regex)) {
             alert("Input must only contain alphanumeric characters.");
             return false;

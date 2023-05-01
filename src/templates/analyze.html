@@ -38,6 +38,7 @@
 {{date_uploaded|e}}
 <h3>File size</h3>
 {{size|e}}
+<br>
 <a href="/analyze">&larr; Back</a>
 {% else %}
 
@@ -45,6 +46,7 @@
     <input type="text" name="fileId" placeholder="Enter file name">
     <input type="submit">
 </form>
+<br>
 <a href="/index">&larr; Back</a>
 {% endif %}
 
@@ -60,7 +62,7 @@
 <script>
     function validateInput() {
         var input = document.forms["file_analysis_form"]["fileId"].value;
-        var regex = /^[a-zA-Z0-9]+$/; // only allow alphanumeric characters
+        var regex = /^[a-zA-Z0-9_\-\. ]+$/; // only allow alphanumeric characters
         if (!input.match(regex)) {
             alert("Input must only contain alphanumeric characters.");
             return false;
