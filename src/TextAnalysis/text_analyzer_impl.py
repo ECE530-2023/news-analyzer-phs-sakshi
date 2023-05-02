@@ -29,7 +29,8 @@ from src.FeedIngester.ingester_feed import get_file_url
 nltk.download('stopwords')
 nltk.download('punkt')
 
-def analyze_file(file, file_id):
+
+async def analyze_file(file, file_id):
     """
     :param file: file to analyze
     :return: boolean - True if file was analyzed successfully

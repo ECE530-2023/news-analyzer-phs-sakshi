@@ -21,13 +21,7 @@ from src.database.Document import get_text_of_file
 @app.route('/paragraphsByKeyword/<keyword>', methods=['GET'])
 def paragraphs_by_keywords(keyword):
     """ search for paragraphs with given keywords"""
-    #paragraphs = get_paragraphs_by_keywords(keyword)
-
-    thread = Thread(get_paragraphs_by_keywords, (keyword,), lambda res: res[0], ())
-    thread.start()
-    thread.stop()
-    paragraphs = thread.join()
-    thread.stop_event.set()
+    paragraphs = get_paragraphs_by_keywords(keyword)
     if paragraphs:
         return paragraphs, 200
     return 'Keyword not found', 400
@@ -45,14 +39,7 @@ def paragraphs_by_sentiment():
     sentiment = args.get('sentiment')
     if sentiment not in ['positive', 'negative', 'neutral']:
         return 'No such sentiment', 400
-    #paragraphs = get_paragraphs_by_sentiment(sentiment)
-
-    thread = Thread(get_paragraphs_by_sentiment, (sentiment,), lambda res: res[0], ())
-    thread.start()
-
-    thread.stop()
-    paragraphs = thread.join()
-    thread.stop_event.set()
+    paragraphs = get_paragraphs_by_sentiment(sentiment)
     return paragraphs, 200
 
 
@@ -67,13 +54,6 @@ def get_keyword_definition():
     keyword = request.form['keyword']
     # keyword = args.get('keyword')
     definition = get_definition(keyword)
-
-    # thread = Thread(get_definition, (keyword,), lambda res: res[0], ())
-    # thread.start()
-    #
-    # thread.stop()
-    # definition = thread.join()
-    # thread.stop_event.set()
     if definition:
         return render_template('search.html', definition=keyword+definition, user=current_user.id)
     return render_template('search.html', user=current_user.id)
@@ -88,13 +68,7 @@ def document_summary():
     """get the summary of the document"""
     file_id = request.form['file_id']
     text = get_text_of_file(file_id)
-    stop_event = threading.Event()
-    thread = Thread(get_document_summary, (text, ), lambda res: res[0], ())
-    thread.start()
-
-    thread.stop()
-    summary = thread.join()
-    thread.stop_event.set()
+    summary = get_document_summary(text)
     if summary:
         return summary, 200
     return 'Unable to find document', 400

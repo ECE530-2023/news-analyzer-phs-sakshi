@@ -8,6 +8,15 @@ from src.FileUploader.upload_file import upload_document, download_document
 from src.database.Users import addUser
 from src.database.create_database import start_database
 from src.TextAnalysis.file_analysis import get_keyword_definition, analyze_complete_file
+from flask_swagger import swagger
+from flask import jsonify
+
+@app.route("/api/apidocumentation")
+def spec():
+    swag = swagger(app, prefix='/api')
+    swag['info']['version'] = "1.0"
+    swag['info']['title'] = "News Analyzer APIs"
+    return jsonify(swag)
 
 app.secret_key = "supersecretkey"
 @app.route('/')
@@ -24,10 +33,10 @@ def file_analysis():
 
 @login_required
 @app.route('/upload', methods=['POST'])
-def upload():
+async def upload():
     user_id = None
     if current_user.is_authenticated:
-        return upload_document()
+        return await upload_document()
     return render_template('unauthorized_access.html')
 
 @login_required

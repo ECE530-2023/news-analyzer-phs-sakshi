@@ -10,7 +10,7 @@ s3 = boto3.client(
     aws_access_key_id=ACCESS_KEY,
     aws_secret_access_key=ACCESS_SECRET
 )
-def upload_file_to_s3(file_data, file):
+async def upload_file_to_s3(file_data, file):
     """
 
     :param file_data: data of the file to uplaod
