@@ -1,10 +1,10 @@
 import io
+import os
 import unittest
 import unittest.mock as mock
 from unittest.mock import patch
 import pytest
 
-from configuration.config import BUCKET_NAME
 from src.FeedIngester.ingester_feed import upload_file_to_s3, get_file_url
 from botocore.exceptions import ClientError
 
@@ -24,7 +24,7 @@ class TestIngesterFeed(unittest.TestCase):
         # Assert that the S3 client was called correctly
         mock_upload_fileobj.assert_called_with(
             file_data,
-            BUCKET_NAME,
+            os.environ.get('AWS_S3_BUCKET_NAME'),
             'test.txt',
             ExtraArgs={'ContentType': 'text/plain'}
         )
@@ -40,7 +40,7 @@ class TestIngesterFeed(unittest.TestCase):
         result = get_file_url(filename)
 
         # Assert that the function returns the correct URL
-        self.assertEqual(result, 'https://s3.amazonaws.com/' + BUCKET_NAME + '/test.txt')
+        self.assertEqual(result, 'https://s3.amazonaws.com/' + os.environ.get('AWS_S3_BUCKET_NAME') + '/test.txt')
 
     def test_get_file_url_with_empty_filename(self):
         filename = ''

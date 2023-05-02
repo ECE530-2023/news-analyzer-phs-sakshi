@@ -3,7 +3,6 @@ from flask import Flask
 from flask_dance.contrib.google import make_google_blueprint
 from flasgger import Swagger
 from flask_login import LoginManager
-from configuration.config import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 
 app = Flask(__name__)
 login_manager = LoginManager()
@@ -12,8 +11,8 @@ swagger = Swagger(app)
 
 
 google_blueprint = make_google_blueprint(
-    client_id=GOOGLE_CLIENT_ID,
-    client_secret=GOOGLE_CLIENT_SECRET,
+    client_id=os.environ.get('GOOGLE_CLIENT_ID'),
+    client_secret=os.environ.get('GOOGLE_CLIENT_SECRET'),
     scope=["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"],
     redirect_url="/index"
 )
