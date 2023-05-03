@@ -1,5 +1,4 @@
 """Module for file analysis"""
-import threading
 
 from flask import request, render_template, abort
 from flask_login import current_user
@@ -9,7 +8,6 @@ from src.TextAnalysis.text_analyzer_impl import get_definition, \
     get_paragraphs_by_sentiment, get_paragraphs_by_keywords, \
     get_document_summary, get_file_info
 from src.app import app
-from src.Thread import Thread
 from src.database.Document import get_text_of_file
 
 
@@ -37,7 +35,7 @@ def paragraphs_by_sentiment():
     """ search for paragraphs with given sentiment"""
     args = request.args
     sentiment = args.get('sentiment')
-    if sentiment not in ['positive', 'negative', 'neutral']:
+    if sentiment not in ['POSITIVE', 'NEGATIVE', 'NEUTRAL']:
         return 'No such sentiment', 400
     paragraphs = get_paragraphs_by_sentiment(sentiment)
     return paragraphs, 200

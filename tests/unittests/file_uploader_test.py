@@ -44,9 +44,12 @@ class TestFileUpload(unittest.TestCase):
         # Check that the response status code is 415
         self.assertEqual(response.status_code, 500)
 
-    @patch('src.FileUploader.upload_file.get_user_file_ids', return_value=['file_id'])
-    @patch('src.FileUploader.upload_file.get_file_by_file_id', return_value=b'file_content')
-    def test_download_document_success(self, mock_get_file_by_file_id, mock_get_user_file_ids):
+    @patch('src.FileUploader.upload_file.get_user_file_ids',
+           return_value=['file_id'])
+    @patch('src.FileUploader.upload_file.get_file_by_file_id',
+           return_value=b'file_content')
+    def test_download_document_success(self, mock_get_file_by_file_id,
+                                       mock_get_user_file_ids):
         # Mock a GET request with a valid fileId and token in the headers
         with app.test_client() as client:
             response = client.get('/download?fileId=file_id', headers={'Authorization': 'Bearer token'})
@@ -55,7 +58,8 @@ class TestFileUpload(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, b'file_content')
 
-        # Check that the get_user_file_ids and get_file_by_file_id functions were called with the correct arguments
+        # Check that the get_user_file_ids and get_file_by_file_id
+        # functions were called with the correct arguments
         mock_get_user_file_ids.assert_called_once()
         mock_get_file_by_file_id.assert_called_once()
 
@@ -70,10 +74,12 @@ class TestFileUpload(unittest.TestCase):
     def test_download_document_file_not_found(self):
         # Mock a GET request with a non-existent fileId and a valid token in the headers
         with app.test_client() as client:
-            response = client.get('/download?fileId=invalid_file_id', headers={'Authorization': 'Bearer token'})
+            response = client.get('/download?fileId=invalid_file_id',
+                                  headers={'Authorization': 'Bearer token'})
 
         # Check that the response status code is 400
         self.assertEqual(response.status_code, 500)
+
 
 if __name__ == '__main__':
     unittest.main()

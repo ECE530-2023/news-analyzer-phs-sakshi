@@ -17,6 +17,8 @@ from src.app import app
 # 404 - File not found
 # 415 - Unsupported Media type
 # 500 - Internal Server Error
+
+
 @app.route('/upload', methods=['POST'])
 async def upload_document():
     """ uploads a document to S3 and analyses the file"""
@@ -28,7 +30,6 @@ async def upload_document():
                 await upload_file_to_s3(io.BytesIO(file_contents), file)
                 await analyze_file(io.BytesIO(file_contents), file.filename)
             else:
-                flash('Invalid file type. Allowed types: pdf, png, jpg, jpeg, csv, doc, txt')
                 raise Exception('inavlid file type')
 
         return render_template('upload.html', file_ids=[file.filename for file in files],
@@ -36,7 +37,6 @@ async def upload_document():
 
     except Exception as e:
         app.logger.error(f'Error uploading document: {str(e)}')
-        flash('Error uploading document. Please try again.')
         return redirect(url_for('uploader'))
 
 

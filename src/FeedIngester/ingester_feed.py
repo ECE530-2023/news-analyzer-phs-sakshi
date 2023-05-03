@@ -11,6 +11,8 @@ s3 = boto3.client(
     aws_access_key_id=os.environ.get('AWS_S3_ACCESS_KEY'),
     aws_secret_access_key=os.environ.get('AWS_S3_ACCESS_SECRET')
 )
+
+
 async def upload_file_to_s3(file_data, file):
     """
 
@@ -35,13 +37,14 @@ async def upload_file_to_s3(file_data, file):
         logging.info("file not uploaded to S3 "+file.filename)
         return e
 
-
     # after upload file to s3 bucket, return filename of the uploaded file
     print_string("file uploaded to S3")
     return file.filename
 
+
 def get_file_url(filename):
     """ gets the url where the file while be stored in S3"""
     if filename:
-        return '%s/%s/%s' % (s3.meta.endpoint_url, os.environ.get('AWS_S3_BUCKET_NAME'), filename)
+        return '%s/%s/%s' % (s3.meta.endpoint_url,
+                             os.environ.get('AWS_S3_BUCKET_NAME'), filename)
     raise ValueError('Invalid file name')

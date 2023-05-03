@@ -1,24 +1,23 @@
-from flask import render_template, redirect, url_for
+import json
+
+from flask import render_template, redirect, url_for, jsonify
 from flask_dance.contrib.google import google
 from flask_login import logout_user, login_user, login_required, current_user
 import requests
+import os
 from app import app, login_manager
 from src.Authentication.User import User
 from src.FileUploader.upload_file import upload_document, download_document
 from src.database.Users import addUser
 from src.database.create_database import start_database
-from src.TextAnalysis.file_analysis import get_keyword_definition, analyze_complete_file
-from flask_swagger import swagger
-from flask import jsonify
-
-@app.route("/api/apidocumentation")
-def spec():
-    swag = swagger(app, prefix='/api')
-    swag['info']['version'] = "1.0"
-    swag['info']['title'] = "News Analyzer APIs"
-    return jsonify(swag)
+from src.TextAnalysis.file_analysis import get_keyword_definition, analyze_complete_file, document_summary
 
 app.secret_key = "supersecretkey"
+
+@app.route('/swagger.json')
+def swagger():
+    with open('./static/swagger.json', 'r') as f:
+        return jsonify(json.load(f))
 @app.route('/')
 @app.route('/home')
 def home():
@@ -116,6 +115,18 @@ def analyze():
         user_id = current_user.id
         return render_template('analyze.html', user=user_id)
     return render_template('unauthorized_access.html')
+
+@app.route('/documentSummary',methods=['POST'])
+def document_summary_api():
+    """get the summary of the document"""
+    if current_user.is_authenticated:
+        user_id = current_user.id
+        return document_summary()
+    return render_template('unauthorized_access.html')
+
+@app.route('/route', methods=['GET'])
+def get_about():
+    return render_template('about.html')
 
 
 if __name__ == '__main__':
