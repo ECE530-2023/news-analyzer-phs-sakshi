@@ -18,7 +18,7 @@ google_blueprint = make_google_blueprint(
 )
 
 SWAGGER_URL = '/swagger'
-API_URL = 'http://127.0.0.1:5000/swagger.json'
+API_URL = '/swagger.json'
 SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
     SWAGGER_URL,
     API_URL,
