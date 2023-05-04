@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>News analyzer project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #34568B;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-right: 40px;
+            margin-left: 30px;
+            padding: 10px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        nav button {
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        nav button:hover {
+            background-color: #0069d9;
+        }
+
+        section {
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h1, h2 {
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 20px;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-top: 0;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.2s ease;
+        }
+
+        .back-button:hover {
+            background-color: #ddd;
+        }
+
+
+    </style>
+</head>
+<body>
+<header>
+    <h1>News Analyzer Project</h1>
+    <p>Analyze documents and get insights on sentiment, keywords, and more.</p>
+</header>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href="/uploader">Upload Document</a>
+    <a href="/uploader">Download Document</a>
+    <a href="/analyze">Process File</a>
+    <a href="/search">Search Keywords</a>
+    {% if user %}
+    <form action="{{ url_for('logout') }}" method="post">
+        <button type="submit">Logout</button>
+    </form>
+    {% endif %}
+</nav>
+
+<footer style="position: absolute; bottom: 0; right: 0; padding: 10px;">
+    <p>&copy; 2023 News Analyzer Project</p>
+</footer>
+</body>
+</html>
+

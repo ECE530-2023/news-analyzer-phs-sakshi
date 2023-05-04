@@ -14,7 +14,7 @@ google_blueprint = make_google_blueprint(
     client_secret=os.environ.get('GOOGLE_CLIENT_SECRET'),
     scope=["https://www.googleapis.com/auth/userinfo.email",
            "https://www.googleapis.com/auth/userinfo.profile"],
-    redirect_url="/index"
+    redirect_url="/"
 )
 
 SWAGGER_URL = '/swagger'

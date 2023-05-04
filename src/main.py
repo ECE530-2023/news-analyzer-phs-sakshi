@@ -21,7 +21,25 @@ def swagger():
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    if google.authorized:
+        try:
+            resp = google.get("/oauth2/v2/userinfo")
+            assert resp.ok, resp.text
+            email = resp.json()["email"]
+            addUser(email)
+            login_user(User(email))
+            return render_template('home.html', user=email)
+        except Exception:
+            return render_template('home.html')
+
+
+@app.route('/about')
+def about():
+    user_id = None
+    if current_user.is_authenticated:
+        user_id = current_user.id
+        return render_template('about.html',user=user_id)
+    return render_template('about.html')
 @login_required
 @app.route('/file_analysis', methods=['POST'])
 def file_analysis():

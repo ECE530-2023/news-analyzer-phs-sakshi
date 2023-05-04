@@ -1,3 +1,5 @@
+<!doctype html>
+<html lang="en">
 <head>
     <style>
         .spinner-border {
@@ -20,89 +22,167 @@
             to { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
         }
 
-        .topnav {
-            position: absolute;
-            top: 20px;
-            right: 10px;
-            float: left;
-        }
-        .topnav button {
-            margin-top: 10px;
-            margin-right: 10px;
-            float: right;
-            font-size: 16px;
-        }
-        .back-link {
-            display: inline-block;
-            margin-top: 10px;
-            font-size: 14px;
-            color: blue;
-            text-decoration: underline;
-        }
-        .error {
-            color: red;
+
+        .file-upload {
+            margin-top: 20px;
+            display: flex;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
+        .file-upload input[type=file] {
+            display: none;
         }
+
+        .file-upload label {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload label:hover {
+            background-color: #0069d9;
+        }
+
+        .file-upload input[type=submit] {
+            margin-left: 10px;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload input[type=submit]:hover {
+            background-color: #0069d9;
+        }
+
+        .file-upload span {
+            margin-left: 10px;
+        }
+
+        /* Additional styles for file download */
+        .file-download {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .file-download a {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .file-download a:hover {
+            background-color: #0069d9;
+        }
+
+        section.upload-section {
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: #f5f5f5;
+            border-radius: 0.5rem;
+        }
+
+
+        .btn {
+            border: none;
+            border-radius: 4px;
+            padding: 12px 20px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #428bca;
+            color: #ffffff;
+        }
+
+        .btn:hover,
+        .btn:focus {
+            opacity: 0.8;
+            outline: none;
+        }
+
+
+        .file-text {
+            font-size: small;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+
+
 
         h1 {
             margin-top: 40px;
         }
-        .submit {
+
+
+        .uploads {
+            margin-top: 10px;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.2s ease;
+        }
+
+        .back-button:hover {
+            background-color: #ddd;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
             background-color: #007bff;
             color: #fff;
-            font-size: 10px;
-            font-weight: bold;
-            padding: 5px 5px;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-        }
-
-        .file-label {
-            font-size: 16px;
-            font-weight: bold;
-            margin-right: 10px;
-            cursor: pointer;
-        }
-
-        .file-btn {
-            font-size: 16px;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-        }
-
-        .file-btn:hover {
-            background-color: #0062cc;
-        }
-
-        .file-btn:focus {
-            outline: none;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
         }
 
 
     </style>
     <script>
         function validateForm() {
-            var filesInput = document.getElementById('file');
-            var files = filesInput['files'];
-            var allowedExtensions = /(\.pdf|\.png|\.jpg|\.jpeg|\.csv|\.doc|\.txt)$/i;
 
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                var filePath = file.name;
-                if (!allowedExtensions.exec(filePath)) {
-                    document.getElementById('fileError').innerHTML = 'Invalid file type. Allowed types: pdf, png, jpg, jpeg, csv, doc, txt';
-                    filesInput.value = '';
-                    return false;
-                }
+            const fileInput = document.getElementById('fileUpload');
+            const uploadButton = document.querySelector('.uploads [type="submit"]');
+            const fileError = document.getElementById('fileError');
+            const allowedExtensions = ['pdf', 'png', 'jpg', 'jpeg', 'csv', 'doc', 'txt'];
+            const files = Array.from(fileInput.files);
+            const invalidFiles = files.filter(file => !allowedExtensions.includes(file.name.split('.').pop().toLowerCase()));
+
+            if (invalidFiles.length) {
+                uploadButton.disabled = true;
+                fileError.textContent = `Invalid file type(s): ${invalidFiles.map(file => file.name).join(', ')}`;
+                return false
             }
 
             document.getElementById('fileError').innerHTML = '';
@@ -110,7 +190,7 @@
             return true;
         }
 
-        document.getElementById('file').addEventListener('change', function() {
+        document.getElementById('fileUpload').addEventListener('change', function() {
             validateForm();
         });
 
@@ -122,59 +202,80 @@
 
         function validateInput() {
             var input = document.forms["download_form"]["fileId"].value;
-            var regex = /^[a-zA-Z0-9]+$/; // only allow alphanumeric characters
+            var regex = /^[a-zA-Z0-9 .]+$/; // only allow alphanumeric characters
             if (!input.match(regex)) {
                 alert("Input must only contain alphanumeric characters.");
                 return false;
             }
         }
 
+
+
     </script>
 
 </head>
 <body>
-{% if file_ids %}
-<p>Successfully uploaded {{ file_ids.length }} file(s) with the following File ID(s):</p>
-<ul>
-    {% for file_id in file_ids %}
-    <li>{{ file_id }}</li>
-    {% endfor %}
-</ul>
-<a href="/uploader" class="back-link">&larr; Back</a>
-{% else %}
 
-<h1>Upload documents</h1>
-<form method="POST" enctype="multipart/form-data" action="/upload" onsubmit="return validateForm()">
-    <label for="fileUpload" class="btn btn-primary">
-        <i class="fas fa-file-upload"></i> Choose Files
-    </label>
-    <input type="file" name="files[]" id="fileUpload" class="d-none" accept=".pdf, .png, .jpg, .jpeg, .csv, .doc, .txt" multiple>
-<!--    <span class="small text-muted">Supported file types: PDF, PNG, JPG, JPEG, CSV, DOC, TXT. Maximum of 5 files.</span>-->
-<!--    <input type="file" name="files[]" id="file" accept=".pdf, .png, .jpg, .jpeg, .csv, .doc, .txt" multiple>-->
-    <input type="submit" value="Upload" class="submit">
-    <div id="spinner" style="display: none;">
-        <div class="spinner-border" role="status">
+{% include 'base.html' %}
+
+{% block content %}
+<section>
+    <div class="container">
+        {% if file_ids %}
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="alert alert-success text-center" role="alert">
+                    Successfully uploaded {{ file_ids.length }} file(s) with the following File ID(s):
+                </div>
+                <ul class="list-group">
+                    {% for file_id in file_ids %}
+                    <li class="list-group-item">{{ file_id }}</li>
+                    {% endfor %}
+                </ul>
+                <a class="back-button" href="/uploader">&larr; Back</a>
+            </div>
         </div>
+        {% else %}
+        <div class="upload-section">
+            <div class="col-md-8">
+                <h1>Upload documents</h1>
+                <form class ="uploads" method="POST" enctype="multipart/form-data" action="/upload" onsubmit="return validateForm()">
+
+                    <input type="file" name="files[]" id="fileUpload" accept=".pdf, .png, .jpg, .jpeg, .csv, .doc, .txt" multiple>
+                    <input type="submit" value="Upload" class="btn btn-primary">
+                    <div id="spinner" style="display: none;">
+                        <div class="spinner-border" role="status">
+                        </div>
+                    </div>
+                    <span class="error" id="fileError"></span>
+                </form>
+                <p class="file-text">Supported file types: PDF, PNG, JPG, JPEG, CSV, DOC, TXT. Maximum of 5 files.</p>
+
+            </div>
+        </div>
+        <hr>
+        <div>
+            <div>
+                <h1 class="text-center mb-4">Download a Document</h1>
+                <form name="download_form" method="GET" action="/download" onsubmit="return validateInput()" style="display: flex; margin-bottom: 20px">
+                    <div class="file-download">
+                        <input type="text" class="form-control" name="fileId" placeholder="Enter File ID" aria-label="Enter File ID" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <input class="btn btn-primary" type="submit" style="margin-left: 70px" value="Download">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <a class="back-button" href="/home">&larr; Back</a>
+        {% endif %}
     </div>
-    <span class="error" id="fileError"></span>
-</form>
+</section>
+{% endblock %}
 
-<h1>Download a document</h1>
-<form name="download_form" method="GET" action="/download" onsubmit="return validateInput()">
-    <input type="text" name="fileId" placeholder="Enter file ID">
-    <input type="submit" value="Download">
-</form>
-<a href="/index">&larr; Back</a>
-{% endif %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+{% endblock %}
 
-
-<div class="col-md-3">
-    <div class="topnav">
-        <form method="post" action="/logout">
-            <span class="mr-3">{{ user|e }}</span>
-            <button type="submit" class="btn btn-outline-primary">Logout</button>
-        </form>
-    </div>
-</div>
 </body>
-
+</html>

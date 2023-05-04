@@ -4,18 +4,7 @@
     <meta charset="UTF-8">
     <title>Analyze Files</title>
     <style>
-        .topnav {
-            position: absolute;
-            top: 20px;
-            right: 10px;
-        }
 
-        .topnav button {
-            margin-top: 10px;
-            margin-right: 10px;
-            float: right;
-            font-size: 16px;
-        }
 
         label {
             display: block;
@@ -65,18 +54,20 @@
         .back-button:hover {
             background-color: #ddd;
         }
+        .analyze {
+            margin: 50px;
+        }
     </style>
 </head>
 <body>
-<header>
-    <h1>Analyze Files</h1>
-</header>
-
+{% include 'base.html' %}
+<section class="analyze">
+<h2> Analyze Files</h2>
 {% if not_found %}
 <section>
     <h2>File not found</h2>
     <p>Please make sure you entered the correct file name and try again.</p>
-    <a href="/analyze">&larr; Back</a>
+    <a class="back-button" href="/analyze">&larr; Back</a>
 </section>
 {% elif file_analyzed %}
 <section>
@@ -90,7 +81,7 @@
         <li><strong>Date uploaded:</strong> {{date_uploaded|e}}</li>
         <li><strong>File size:</strong> {{size|e}} bytes</li>
     </ul>
-    <a class="back-button" href="/index">&larr; Back</a>
+    <a class="back-button" href="/analyze">&larr; Back</a>
 </section>
 {% else %}
 
@@ -99,24 +90,17 @@
     <input type="submit">
 </form>
 <br>
-<a class="back-button" href="/index">&larr; Back</a>
+<a class="back-button" href="/home">&larr; Back</a>
 {% endif %}
 
-<div class="col-md-3">
-    <div class="topnav">
-        <form method="post" action="/logout">
-            <span class="mr-3">{{ user|e }}</span>
-            <button type="submit" class="btn btn-outline-primary">Logout</button>
-        </form>
-    </div>
-</div>
+</section>
 </body>
 </html>
 
 <script>
     function validateInput() {
         var input = document.forms["file_analysis_form"]["fileId"].value;
-        var regex = /^[a-zA-Z0-9_\-\. ]+$/; // only allow alphanumeric characters
+        var regex = /^[a-zA-Z0-9_\-. ]+$/; // only allow alphanumeric characters
         if (!input.match(regex)) {
             alert("Input must only contain alphanumeric characters.");
             return false;
