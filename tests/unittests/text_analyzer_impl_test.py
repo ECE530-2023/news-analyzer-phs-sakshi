@@ -19,7 +19,7 @@ class TestAnalyzeFileImpl(unittest.TestCase):
     @patch("src.TextAnalysis.text_analyzer_impl.analyze_file_sentiment")
     @patch('src.TextAnalysis.text_analyzer_impl.get_document_summary')
     @patch('src.TextAnalysis.text_analyzer_impl.insert_doc', return_value=True)
-    def test_analyze_file_success(self, mock_analyze_file_sentiment,
+    async def test_analyze_file_success(self, mock_analyze_file_sentiment,
                                   mock_tag_document_by_keyword, mock_find_keywords_file,
                                   mock_convert_file_to_text, mock_summary, mock_insert):
         """ function to test success file analysis"""
@@ -31,7 +31,7 @@ class TestAnalyzeFileImpl(unittest.TestCase):
         file = MagicMock()
         file_id = "12345.txt"
 
-        analyze_file(file, file_id)
+        await analyze_file(file, file_id)
         mock_convert_file_to_text.assert_called_once()
         mock_find_keywords_file.assert_called_once()
         mock_tag_document_by_keyword.assert_called_once()
@@ -113,7 +113,7 @@ class TestAnalyzeFileImpl(unittest.TestCase):
     @patch("src.TextAnalysis.text_analyzer_impl.tag_document_by_keyword")
     @patch("src.TextAnalysis.text_analyzer_impl.analyze_file_sentiment")
     @patch('src.TextAnalysis.text_analyzer_impl.insert_doc', return_value=True)
-    def test_analyze_file_invalid_input_file(self, mock_insert,
+    async def test_analyze_file_invalid_input_file(self, mock_insert,
                                              mock_analyze_file_sentiment,
                                              mock_tag_document_by_keyword,
                                              mock_find_keywords_file,
@@ -127,7 +127,7 @@ class TestAnalyzeFileImpl(unittest.TestCase):
         file_id = "12345"
         file.read.return_value = b''
 
-        result = analyze_file(file, file_id)
+        result = await analyze_file(file, file_id)
 
         self.assertFalse(result)
         mock_convert_file_to_text.assert_not_called()
@@ -161,22 +161,22 @@ class TestAnalyzeFileImpl(unittest.TestCase):
 
         self.assertEqual(result, 'POSITIVE')
 
-    def test_analyze_file_no_content(self):
+    async def test_analyze_file_no_content(self):
         file = 'non_existing_file'
         file_id = '123'
-        self.assertFalse(analyze_file(file, file_id))
+        self.assertFalse(await analyze_file(file, file_id))
 
-    def test_analyze_file_with_unsupported_extension(self):
+    async def test_analyze_file_with_unsupported_extension(self):
         file = 'unsupported_file'
         file_id = '123.xyz'
-        self.assertFalse(analyze_file(file, file_id))
+        self.assertFalse(await analyze_file(file, file_id))
 
-    def test_analyze_empty_file(self):
+    async def test_analyze_empty_file(self):
         file = 'empty_file.pdf'
         file_id = '123'
         with open(file, 'w') as f:
             f.write('')
-        self.assertFalse(analyze_file(file, file_id))
+        self.assertFalse(await analyze_file(file, file_id))
 
     @patch('src.TextAnalysis.text_analyzer_impl.update_doc_sentiment')
     def test_find_keywords_file_empty_file(self, mock_update):
