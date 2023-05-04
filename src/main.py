@@ -1,15 +1,23 @@
-from flask import render_template, redirect, url_for
+import json
+
+from flask import render_template, redirect, url_for, jsonify
 from flask_dance.contrib.google import google
 from flask_login import logout_user, login_user, login_required, current_user
 import requests
+import os
 from app import app, login_manager
 from src.Authentication.User import User
 from src.FileUploader.upload_file import upload_document, download_document
 from src.database.Users import addUser
 from src.database.create_database import start_database
-from src.TextAnalysis.file_analysis import get_keyword_definition, analyze_complete_file
+from src.TextAnalysis.file_analysis import get_keyword_definition, analyze_complete_file, document_summary
 
 app.secret_key = "supersecretkey"
+
+@app.route('/swagger.json')
+def swagger():
+    with open('./static/swagger.json', 'r') as f:
+        return jsonify(json.load(f))
 @app.route('/')
 @app.route('/home')
 def home():
@@ -24,10 +32,10 @@ def file_analysis():
 
 @login_required
 @app.route('/upload', methods=['POST'])
-def upload():
+async def upload():
     user_id = None
     if current_user.is_authenticated:
-        return upload_document()
+        return await upload_document()
     return render_template('unauthorized_access.html')
 
 @login_required
@@ -108,7 +116,19 @@ def analyze():
         return render_template('analyze.html', user=user_id)
     return render_template('unauthorized_access.html')
 
+@app.route('/documentSummary',methods=['POST'])
+def document_summary_api():
+    """get the summary of the document"""
+    if current_user.is_authenticated:
+        user_id = current_user.id
+        return document_summary()
+    return render_template('unauthorized_access.html')
+
+@app.route('/route', methods=['GET'])
+def get_about():
+    return render_template('about.html')
+
 
 if __name__ == '__main__':
     start_database()
-    app.run()
+    app.run(host='0.0.0.0', port=5000)

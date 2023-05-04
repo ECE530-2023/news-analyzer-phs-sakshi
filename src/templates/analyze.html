@@ -16,30 +16,82 @@
             float: right;
             font-size: 16px;
         }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .back-button {
+            display: inline-block;
+            padding: 10px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.2s ease;
+        }
+
+        .back-button:hover {
+            background-color: #ddd;
+        }
     </style>
 </head>
 <body>
-<h1>Analyze Files</h1>
+<header>
+    <h1>Analyze Files</h1>
+</header>
+
 {% if not_found %}
-<h3>File not found</h3>
-<a href="/analyze">&larr; Back</a>
+<section>
+    <h2>File not found</h2>
+    <p>Please make sure you entered the correct file name and try again.</p>
+    <a href="/analyze">&larr; Back</a>
+</section>
 {% elif file_analyzed %}
-<h3>Document name</h3>
-{{name}}
-<h3>Document link</h3>
-{{link}}
-<h3>Keywords</h3>
-{{keywords|e}}
-<h3>Summary</h3>
-{{summary|e}}
-<h3>Sentiment</h3>
-{{sentiment|e}}
-<h3>Date Uploaded</h3>
-{{date_uploaded|e}}
-<h3>File size</h3>
-{{size|e}}
-<br>
-<a href="/analyze">&larr; Back</a>
+<section>
+    <h2>File Analysis Results</h2>
+    <ul>
+        <li><strong>Document name:</strong> {{name|e}}</li>
+        <li><strong>Document link:</strong> {{link|e}}</li>
+        <li><strong>Keywords:</strong> {{keywords|e}}</li>
+        <li><strong>Summary:</strong> {{summary|e}}</li>
+        <li><strong>Sentiment:</strong> {{sentiment|e}}</li>
+        <li><strong>Date uploaded:</strong> {{date_uploaded|e}}</li>
+        <li><strong>File size:</strong> {{size|e}} bytes</li>
+    </ul>
+    <a class="back-button" href="/index">&larr; Back</a>
+</section>
 {% else %}
 
 <form name="file_analysis_form" method="POST" action="/file_analysis" onsubmit="return validateInput()">
@@ -47,14 +99,16 @@
     <input type="submit">
 </form>
 <br>
-<a href="/index">&larr; Back</a>
+<a class="back-button" href="/index">&larr; Back</a>
 {% endif %}
 
-<div class="topnav">
-    {{user|e}}
-    <form method="post" action="/logout">
-        <button type="submit">Logout</button>
-    </form>
+<div class="col-md-3">
+    <div class="topnav">
+        <form method="post" action="/logout">
+            <span class="mr-3">{{ user|e }}</span>
+            <button type="submit" class="btn btn-outline-primary">Logout</button>
+        </form>
+    </div>
 </div>
 </body>
 </html>
@@ -69,5 +123,3 @@
         }
     }
 </script>
-
-

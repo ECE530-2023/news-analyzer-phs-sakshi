@@ -1,0 +1,293 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "sean",
+    "version": "1.0.0",
+    "title": "News-Analyzer-API documentation",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Home page",
+        "description": "Displays the home page of the application.",
+        "responses": {
+          "200": {
+            "description": "HTML content of the home page"
+          }
+        }
+      }
+    },
+  "/file_analysis": {
+    "post": {
+      "summary": "Analyze a file to calculate keywords, summary and sentiment",
+      "description": "Analyzes a file with the given ID to extract keywords, summary and sentiment. Returns the results in a rendered HTML template.",
+      "requestBody": {
+        "content": {
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fileId": {
+                  "type": "string",
+                  "description": "The ID of the file to be analyzed."
+                }
+              },
+              "required": [
+                "fileId"
+              ]
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "File analyzed successfully",
+          "content": {
+            "text/html": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad request"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    }
+  },
+
+"/upload": {
+      "post": {
+        "summary": "Uploads a document to S3 and analyses the file",
+        "consumes": "multipart/form-data",
+        "content": {
+          "multipart/form-data": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "files[]": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "files[]",
+            "in": "formData",
+            "description": "Document to upload",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "File not found"
+          },
+          "415": {
+            "description": "Unsupported Media type"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/download": {
+      "get": {
+        "summary": "Downloads the document from S3",
+        "parameters": [
+          {
+            "name": "fileId",
+            "in": "query",
+            "description": "Document to download",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "File not found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "415": {
+            "description": "Unsupported Media type"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/paragraphsBySentiment": {
+      "get": {
+        "summary": "Search for paragraphs with given sentiment",
+        "parameters": [
+          {
+            "name": "sentiment",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "positive",
+                "negative",
+                "neutral"
+              ]
+            },
+            "description": "Sentiment to match the paragraphs"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/keywordDefinition": {
+      "post": {
+        "summary": "Get the definition of a keyword",
+        "description": "Returns the definition of a given keyword",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "keyword": {
+                    "type": "string",
+                    "description": "The keyword to get the definition for"
+                  }
+                },
+                "required": [
+                  "keyword"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "description": "The HTML representation of the search results page with the keyword definition"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request error response",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "description": "The HTML representation of the search results page with an error message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error response",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "description": "The HTML representation of the error page"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+  "/documentSummary": {
+    "post": {
+      "summary": "Get the summary of a document",
+      "description": "Get the summary of the document identified by the given file_id",
+      "requestBody": {
+        "content": {
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fileId": {
+                  "type": "string",
+                  "description": "The ID of the file to be analyzed."
+                }
+              },
+              "required": [
+                "file_id"
+              ]
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "File analyzed successfully",
+          "content": {
+            "text/html": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad request"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    }
+    }
+  }
+}

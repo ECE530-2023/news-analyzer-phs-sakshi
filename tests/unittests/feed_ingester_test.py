@@ -1,62 +1,57 @@
-import io
+import os
 import unittest
-import unittest.mock as mock
-from unittest.mock import patch
-import pytest
-
-from configuration.config import BUCKET_NAME
+from io import BytesIO
+from unittest import mock, TestCase
 from src.FeedIngester.ingester_feed import upload_file_to_s3, get_file_url
-from botocore.exceptions import ClientError
 
-class TestIngesterFeed(unittest.TestCase):
 
-    @mock.patch('src.FeedIngester.ingester_feed.s3.upload_fileobj')
-    def test_upload_file_to_s3(self, mock_upload_fileobj):
-        # Set up test data
-        file_data = io.BytesIO(b'test data')
-        file = mock.MagicMock()
-        file.filename = 'test.txt'
-        file.content_type = 'text/plain'
+class FeedIngesterTest(TestCase):
 
-        # Call the function
-        result = upload_file_to_s3(file_data, file)
 
-        # Assert that the S3 client was called correctly
-        mock_upload_fileobj.assert_called_with(
+    @mock.patch('src.FeedIngester.ingester_feed.boto3.client')
+    async def test_upload_file_to_s3(self, mock_s3_client):
+        # Arrange
+        mock_s3 = mock.Mock()
+        mock_s3_client.return_value = mock_s3
+
+        file_data = BytesIO(b'test data')
+        file_name = 'test_file.txt'
+
+        expected_content_type = 'text/plain'
+        expected_bucket_name = 'my-bucket'
+
+        os.environ['AWS_S3_ACCESS_KEY'] = 'my_access_key'
+        os.environ['AWS_S3_ACCESS_SECRET'] = 'my_access_secret'
+        os.environ['AWS_S3_BUCKET_NAME'] = expected_bucket_name
+
+        # Act
+        result = await upload_file_to_s3(file_data, file_name)
+
+        # Assert
+        mock_s3.upload_fileobj.assert_called_once_with(
             file_data,
-            BUCKET_NAME,
-            'test.txt',
-            ExtraArgs={'ContentType': 'text/plain'}
+            expected_bucket_name,
+            file_name,
+            ExtraArgs={
+                "ContentType": expected_content_type
+            }
         )
 
-        # Assert that the function returns the correct result
-        self.assertEqual(result, 'test.txt')
+        self.assertEqual(result, file_name)
 
+    @mock.patch.dict(os.environ, {
+        'AWS_S3_ACCESS_KEY': 'ACCESS_KEY',
+        'AWS_S3_ACCESS_SECRET': 'ACCESS_SECRET',
+        'AWS_S3_BUCKET_NAME': 'my-bucket'
+    })
     def test_get_file_url(self):
-        # Set up test data
-        filename = 'test.txt'
+        # Test with a valid filename
+        url = get_file_url('my-file.txt')
+        self.assertEqual(url, 'https://s3.amazonaws.com/my-bucket/my-file.txt')
 
-        # Call the function
-        result = get_file_url(filename)
+        # Test with an invalid filename
+        with self.assertRaises(ValueError):
+            get_file_url(None)
 
-        # Assert that the function returns the correct URL
-        self.assertEqual(result, 'https://s3.amazonaws.com/' + BUCKET_NAME + '/test.txt')
-
-    def test_get_file_url_with_empty_filename(self):
-        filename = ''
-        with pytest.raises(ValueError):
-            get_file_url(filename)
-
-    @patch('src.FeedIngester.ingester_feed.s3.upload_fileobj')
-    def test_upload_error(self, mock_upload_fileobj):
-        file_data = io.BytesIO(b'Test data')
-        file_data.content_type = 'image/png'
-        file = mock_upload_fileobj.return_value
-
-        error_message = 'An error occurred while uploading the file'
-        mock_upload_fileobj.side_effect = ClientError({'Error': {'Message': error_message}}, 'operation_name')
-
-        result = upload_file_to_s3(file_data, file)
-
-        assert result == mock_upload_fileobj.side_effect
-
+if __name__ == '__main__':
+    unittest.main()

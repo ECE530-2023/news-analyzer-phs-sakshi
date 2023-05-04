@@ -8,7 +8,6 @@ from src.FileUploader.file_uploader_impl import get_user_file_ids, \
     is_allowed_file_extension, get_file_by_file_id
 from src.InputOutput.output import print_string
 from src.TextAnalysis.text_analyzer_impl import analyze_file
-from src.Thread import Thread
 from src.app import app
 
 # @Input parameters - document to upload
@@ -18,32 +17,19 @@ from src.app import app
 # 404 - File not found
 # 415 - Unsupported Media type
 # 500 - Internal Server Error
+
+
 @app.route('/upload', methods=['POST'])
-def upload_document():
+async def upload_document():
     """ uploads a document to S3 and analyses the file"""
     try:
         files = request.files.getlist('files[]')
         for file in files:
             if file and is_allowed_file_extension(file.filename):
-                # thread1 = Thread(upload_file_to_s3, (fileToS3, ), lambda _: None, ())
-                # thread1.start()
-                # thread1.stop()
-                # thread1.stop_event.set()
-                # # upload_file_to_s3(file)
-                #
-                # #analyze_file(file, file_id)
-                # #implement threading
-                #
-                # thread2 = Thread(analyze_file, (fileAnalyze, fileAnalyze.filename), lambda _: None, ())
-                # thread2.start()
-                # thread2.stop()
-                # thread2.stop_event.set()
                 file_contents = file.read()
-                upload_file_to_s3(io.BytesIO(file_contents), file)
-                analyze_file(io.BytesIO(file_contents), file.filename)
-                # analyze_file(file, file.filename)
+                await upload_file_to_s3(io.BytesIO(file_contents), file)
+                await analyze_file(io.BytesIO(file_contents), file.filename)
             else:
-                flash('Invalid file type. Allowed types: pdf, png, jpg, jpeg, csv, doc, txt')
                 raise Exception('inavlid file type')
 
         return render_template('upload.html', file_ids=[file.filename for file in files],
@@ -51,7 +37,6 @@ def upload_document():
 
     except Exception as e:
         app.logger.error(f'Error uploading document: {str(e)}')
-        flash('Error uploading document. Please try again.')
         return redirect(url_for('uploader'))
 
 
@@ -74,11 +59,6 @@ def download_document():
             return 'File not found', 404
 
         file = get_file_by_file_id(file_id)
-        # thread = Thread(get_file_by_file_id, (file_id, ), lambda res: res[0], ())
-        # thread.start()
-        # thread.stop()
-        # file = thread.join()
-        # thread.stop_event.set()
         return file, 200
 
     except ValueError:

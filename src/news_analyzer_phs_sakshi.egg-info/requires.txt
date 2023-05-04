@@ -22,4 +22,3 @@ flask-dance==6.2.0
 textract==1.6.5
 flask-swagger==0.2.14
 asgiref==3.6.0
-flask-swagger-ui==4.11.1

@@ -1,27 +1,29 @@
 """tests text analyzer module"""
 import logging
+import csv
+import string
+from heapq import nlargest
 
 import pypdf
 import pytesseract
-from PIL import Image
-import csv
+import nltk
 import textract
 import docx
 import requests
+
+
+from PIL import Image
 from bs4 import BeautifulSoup
 from textblob import TextBlob
-import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
 from nltk.tokenize import sent_tokenize
-from heapq import nlargest
-import string
-
 
 from src.FileUploader.file_uploader_impl import get_file_extension
-from src.database.Document import update_doc_sentiment, insert_doc, get_file_by_id
-from src.database.Keywords import insert_keywords,insert_keywords_by_para
+from src.database.Document import update_doc_sentiment, \
+    insert_doc, get_file_by_id
+from src.database.Keywords import insert_keywords, insert_keywords_by_para
 from src.database.Paragraphs import insert_paragraph, update_para_sentiment, get_para_by_keyword
 from src.database.Paragraphs import get_para_by_sentiment
 from src.FeedIngester.ingester_feed import get_file_url
@@ -29,9 +31,11 @@ from src.FeedIngester.ingester_feed import get_file_url
 nltk.download('stopwords')
 nltk.download('punkt')
 
-def analyze_file(file, file_id):
+
+async def analyze_file(file, file_id):
     """
     :param file: file to analyze
+    file_id : file name of the current file to analyze
     :return: boolean - True if file was analyzed successfully
     """
     file_extension = get_file_extension(file_id)
@@ -60,20 +64,12 @@ def find_keywords_file(file, file_id):
         insert_keywords(keyword, file_id, get_definition(keyword))
     return keywords
 
-def find_keywords(file):
-    # words = word_tokenize(file)
-    #
-    # # Remove stopwords (common words that don't carry much meaning)
-    # stopwords = set(stp.words('english'))
-    # words = [word for word in words if word.casefold() not in stopwords]
-    #
-    # # Calculate the frequency distribution of the remaining words
-    # fdist = FreqDist(words)
-    #
-    # # Print the 10 most common words (i.e. the keywords)
-    # print(fdist.most_common(10))
-    # return fdist.most_common(10)
 
+def find_keywords(file):
+    """
+    :param file: file to extract keywords from
+    :return: keywords of the file
+    """
     tokens = word_tokenize(file)
     stop_words = set(stopwords.words('english'))
     stop_words.update(list(string.punctuation))
@@ -84,6 +80,7 @@ def find_keywords(file):
     # # Print the 10 most common words (i.e. the keywords)
     print(fdist.most_common(10))
     return fdist.most_common(10)
+
 
 def analyze_file_sentiment(file, file_id):
     """ analyzes the text present in a file"""
@@ -98,6 +95,7 @@ def analyze_file_sentiment(file, file_id):
     update_doc_sentiment(file_id, sentiment)
     return sentiment
 
+
 def analyze_paragraph_sentiment(para_id, para, file_id):
     blob = TextBlob(para)
     sentiment = blob.sentiment.polarity
@@ -109,6 +107,8 @@ def analyze_paragraph_sentiment(para_id, para, file_id):
         sentiment = 'NEUTRAL'
     update_para_sentiment(file_id, sentiment, para_id)
     return sentiment
+
+
 def convert_file_to_text(file, file_extension):
     """
     Extract text from the file based on its extension.
@@ -122,24 +122,29 @@ def convert_file_to_text(file, file_extension):
             text += page.extract_text()
         return text
 
-    else:
-        # extract text from other file types using Textract library
-        text = textract.process(file, method='tesseract')
-        return text.decode('utf-8')
+    # extract text from other file types using Textract library
+    text = textract.process(file, method='tesseract')
+    return text.decode('utf-8')
+
 
 def convert_pdf_to_text(file):
+    """ extract the text from a pdf file """
     pdf_reader = pypdf.PdfReader(file)
     text = ''
     for page in pdf_reader.pages:
         text += page.extract_text()
     return text
 
+
 def convert_image_to_text(file):
+    """ extract text from image """
     image = Image.open(file)
     text = pytesseract.image_to_string(image)
     return text
 
+
 def convert_csv_to_text(file):
+    """ extract text from csv file """
     csv_reader = csv.reader(file)
 
     # Read each row of the CSV file
@@ -148,7 +153,9 @@ def convert_csv_to_text(file):
         text += ','.join(row) + '\n'
     return text
 
+
 def convert_doc_to_text(file):
+    """ extract text from .docx file """
     text = ''
     doc = docx.Document(file)
     for para in doc.paragraphs:
@@ -222,7 +229,6 @@ def get_document_summary(text):
     return summary
 
 
-
 def get_paragraphs_by_sentiment(sentiment):
     """returns all paragraphs associated with a sentiment"""
     return get_para_by_sentiment(sentiment)
@@ -232,5 +238,7 @@ def get_paragraphs_by_keywords(keyword):
     """returns all paragraphs associated with a keyword"""
     return get_para_by_keyword(keyword)
 
+
 def get_file_info(file_id):
+    """ get the information of the file using file name """
     return get_file_by_id(file_id)

@@ -1,0 +1,21 @@
+Metadata-Version: 2.1
+Name: news-analyzer-phs-sakshi
+Version: 0.0.1
+Summary: News analyzer package
+Author-email: Sakshi Sharma <phsakshi@bu.edu>
+Project-URL: Homepage, https://github.com/ECE530-2023/news-analyzer-phs-sakshi
+Project-URL: Bug Tracker, https://github.com/ECE530-2023/news-analyzer-phs-sakshi/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+The application is built using Python and can analyze documents in various formats, including PDF, Microsoft Word,
+and plain text files. The application can identify entities, relationships, keywords and sentiments in the text,
+and it can generate reports summarizing the information in the document.
+
+
+
+Checkout the documentation for more details.

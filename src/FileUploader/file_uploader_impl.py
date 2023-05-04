@@ -1,10 +1,11 @@
 """ Implement main logic for file uploader APIs"""
-import os
 
 from src.database.Document import fetch_all_user_file_ids
 from src.database.Document import get_file
 
 ALLOWED_EXTENSIONS = ['pdf', 'png', 'jpg', 'jpeg', 'csv', 'doc', 'txt']
+
+
 def get_user_file_ids():
     """
     :param user_id: user id to
@@ -30,12 +31,14 @@ def is_allowed_file_extension(ext):
     return '.' in ext and \
            ext.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
 def get_file_size(file):
     """
     :param file: file whose size to calculate
     :return: size of the file
     """
     return len(file.read())
+
 
 def get_file_extension(filename):
     """
@@ -44,4 +47,3 @@ def get_file_extension(filename):
     """
     ext = '.' in filename and filename.rsplit('.', 1)[1].lower()
     return ext if ext and ext in ALLOWED_EXTENSIONS else False
-

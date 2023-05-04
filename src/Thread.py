@@ -28,7 +28,6 @@ class Thread(threading.Thread):
                 self.running = False
                 break
 
-
     def stop(self):
         """Stop the thread"""
         self.running = False
