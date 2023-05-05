@@ -127,7 +127,7 @@
         <button type="submit">Logout</button>
     </form>
     {% else %}
-    <form action="{{ url_for('google.login') }}" method="post">
+    <form href="{{ url_for('google.login') }}">
         <button type="submit">Login</button>
     </form>
     {% endif %}

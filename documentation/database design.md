@@ -40,19 +40,20 @@ Tables:
    permission_set <br />
    email
 2. Document Table<br />
- doc_id <br />
+   doc_id <br />
+   doc_name <br />
+   doc_link <br />
+   doc_text <br />
+   sentiment <br />
    date_uploaded <br />
-   date_deleteion <br />
-user_id  <br />
-doc_link <br />
-doc_text_link <br />
-sentiment <br />
-file size <br />
-doc_name <br />
+   date_deleted <br />
+   file_size <br />
+   summary <br />
 3. Paragraphs Table <br />
 para_id <br />
 doc_id <br />
-sentiment 
+sentiment <br />
+paragraph
 4. Keywords Table
    keyword_id <br />
 doc_id <br />
@@ -61,6 +62,6 @@ definition <br />
 keyword_name
 
 The figure below shows how the tables are connected.
-![Database Design](database%20design.png)<br />
+![Database Design](database design.png) <br />
 
 This design helps with our APIs since these APIs are compute heavy - for example text analysis API uses SQLite to access contents which is faster and utilises cloud for when we need our API to store large amounts of data.
