@@ -1,127 +1,52 @@
-<!--<style>-->
-<!--    .topnav {-->
-<!--        position: absolute;-->
-<!--        top: 20px;-->
-<!--        right: 10px;-->
-<!--    }-->
+<style>
+    .topnav {
+        position: absolute;
+        top: 20px;
+        right: 10px;
+    }
 
-<!--    .topnav button {-->
-<!--        margin-top: 10px;-->
-<!--        margin-right: 10px;-->
-<!--        float: right;-->
-<!--        font-size: 16px;-->
-<!--    }-->
-<!--</style>-->
-<!--{% block content %}-->
-<!--<div class="container mt-3">-->
-
-<!--    {% if user %}-->
-<!--    Welcome {{user|e}}!-->
-
-<!--    <ul class="nav nav-tabs">-->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link active" href="uploader" data-toggle="tab">Upload/Download Files</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" href="analyze" data-toggle="tab">Analyze Files</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" href="search" data-toggle="tab">Search Keyword Definition</a>-->
-<!--        </li>-->
-<!--    </ul>-->
-<!--    <div class="tab-content">-->
-<!--        <div class="tab-pane active" id="upload">-->
-<!--            &lt;!&ndash; upload/download files form &ndash;&gt;-->
-<!--        </div>-->
-<!--        <div class="tab-pane" id="analyze">-->
-<!--            &lt;!&ndash; file analysis form &ndash;&gt;-->
-<!--        </div>-->
-<!--        <div class="tab-pane" id="search">-->
-<!--            &lt;!&ndash; keyword search form &ndash;&gt;-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--<div class="topnav">-->
-<!--    {{user}}-->
-<!--    <form method="post" action="/logout">-->
-<!--        <button type="submit">Logout</button>-->
-<!--    </form>-->
-<!--</div>-->
-<!--{% endif %}-->
-<!--{% endblock %}-->
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>News Analyzer Project</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <style>
-        .topnav {
-            position: absolute;
-            top: 20px;
-            right: 10px;
-            font-size: 16px;
-        }
-        .nav-link {
-            color: #333;
-        }
-        .nav-link.active {
-            background-color: #007bff;
-            color: #fff;
-        }
-    </style>
-</head>
-<body>
+    .topnav button {
+        margin-top: 10px;
+        margin-right: 10px;
+        float: right;
+        font-size: 16px;
+    }
+</style>
+{% block content %}
 <div class="container mt-3">
+
     {% if user %}
-    <div class="row">
-        <div class="col-md-9">
-            <h2 style="font-size: 25px;margin-top: 10px;">Welcome {{ user|e }}!</h2>
-        </div>
-<!--        <div class="col-md-3">-->
-<!--            <div class="topnav">-->
-<!--                <form method="post" action="/logout">-->
-<!--                    <span class="mr-3">{{ user }}</span>-->
-<!--                    <button type="submit" class="btn btn-outline-primary">Logout</button>-->
-<!--                </form>-->
-<!--            </div>-->
-<!--        </div>-->
-    </div>
-    <hr>
+    Welcome {{user|e}}!
+
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" href="#upload" data-toggle="tab">Upload/Download Files</a>
+            <a class="nav-link active" href="uploader" data-toggle="tab">Upload/Download Files</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#analyze" data-toggle="tab">Analyze Files</a>
+            <a class="nav-link" href="analyze" data-toggle="tab">Analyze Files</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#search" data-toggle="tab">Search Keyword Definition</a>
+            <a class="nav-link" href="search" data-toggle="tab">Search Keyword Definition</a>
         </li>
     </ul>
-    <div class="tab-content mt-3">
+    <div class="tab-content">
         <div class="tab-pane active" id="upload">
-            {% include 'upload.html' %}
+            <!-- upload/download files form -->
         </div>
         <div class="tab-pane" id="analyze">
-            {% include 'analyze.html' %}
+            <!-- file analysis form -->
         </div>
         <div class="tab-pane" id="search">
-            {% include 'search.html' %}
+            <!-- keyword search form -->
         </div>
     </div>
-    {% else %}
-    <h2>Welcome!</h2>
-    <p><a href="{{ url_for('google.login') }}" class="btn btn-outline-primary">Login with Google</a></p>
-    {% endif %}
 </div>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-</body>
-</html>
+
+<div class="topnav">
+    {{user}}
+    <form method="post" action="/logout">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+{% endif %}
+{% endblock %}

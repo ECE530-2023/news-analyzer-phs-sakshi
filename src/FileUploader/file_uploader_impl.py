@@ -3,7 +3,7 @@
 from src.database.Document import fetch_all_user_file_ids
 from src.database.Document import get_file
 
-ALLOWED_EXTENSIONS = ['pdf', 'png', 'jpg', 'jpeg', 'csv', 'doc', 'txt']
+ALLOWED_EXTENSIONS = ['pdf', 'png', 'jpg', 'jpeg', 'csv', 'docx', 'txt']
 
 
 def get_user_file_ids():

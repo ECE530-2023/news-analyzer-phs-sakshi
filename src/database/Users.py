@@ -5,7 +5,8 @@ from src.InputOutput.output import print_string
 
 
 def create_users_table():
-    """create and and sample values to users table"""
+    """create and sample values to users table"""
+
     create_users_table = '''CREATE TABLE IF NOT EXISTS users (
                                     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
                                     permission_set TEXT NOT NULL,
@@ -29,5 +30,7 @@ def create_users_table():
 
 
 def addUser(email):
+    """ add email associated to a particular user"""
+
     query = '''INSERT OR IGNORE INTO users (permission_set,email) VALUES ('RW',?)'''
     execute_query(query, (email, ))

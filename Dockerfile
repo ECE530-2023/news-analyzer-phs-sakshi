@@ -27,7 +27,7 @@ EXPOSE 8000
 
 # configure the container to run the flask app on port 5000
 ENTRYPOINT [ "python" ]
-CMD ["src/main.py"]
+CMD ["src/start_app.py"]
 
 # to run the container on port 8000, use the following command:
 # docker run -p 8000:5000 <image_name>

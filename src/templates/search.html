@@ -4,44 +4,84 @@
     <meta charset="UTF-8">
     <title>Search Keyword</title>
     <style>
-        .topnav {
-            position: absolute;
-            top: 20px;
-            right: 10px;
+
+
+        label {
+            display: block;
+            margin-bottom: 10px;
         }
 
-        .topnav button {
-            margin-top: 10px;
-            margin-right: 10px;
-            float: right;
+        input[type="text"] {
+            padding: 10px;
             font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .back-button {
+            display: inline-block;
+            padding: 10px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.2s ease;
+        }
+
+        .back-button:hover {
+            background-color: #ddd;
+        }
+        h1 {
+            margin-top: 40px;
         }
     </style>
 </head>
 <body>
+{% include 'base.html' %}
+<section>
+<div>
 <h1>Search Keyword</h1>
-<form name="search_form" method="POST" action="/keywordDefinition" onsubmit="return validateInput()">
+<form style="margin: 20px" name="search_form" method="POST" action="/keywordDefinition" onsubmit="return validateInput()">
     <label for="keyword">Enter Keyword:</label>
     <input type="text" id="keyword" name="keyword">
-    <button type="submit">Search</button>
+    <input type="submit" value="Search">
 </form>
 {% if definition %}
-<h2>Definition:</h2>
-<p>{{ definition|e }}</p>
-<a href="/search">&larr; Back</a>
+<h1>Definition:</h1>
+<p style="margin: 20px">{{ definition|e }}</p>
+<a href="/search" class="back-button">&larr; Back</a>
 
 {% else %}
-<a href="/index">&larr; Back</a>
+<a href="/home" class="back-button">&larr; Back</a>
 {% endif %}
-<br>
-<div class="col-md-3">
-    <div class="topnav">
-        <form method="post" action="/logout">
-            <span class="mr-3">{{ user|e }}</span>
-            <button type="submit" class="btn btn-outline-primary">Logout</button>
-        </form>
-    </div>
+    <br>
 </div>
+</section>
+
+
 
 <script>
     function validateInput() {

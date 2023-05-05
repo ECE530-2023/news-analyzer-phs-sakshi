@@ -1,5 +1,6 @@
+""" main app class to register all blueprints and make the Flask app """
 import os
-from flask import Flask, url_for
+from flask import Flask
 from flask_dance.contrib.google import make_google_blueprint
 from flask_login import LoginManager
 from flask_swagger_ui import get_swaggerui_blueprint
@@ -7,6 +8,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
+app.secret_key = "supersecretkey"
 
 
 google_blueprint = make_google_blueprint(
@@ -14,7 +16,7 @@ google_blueprint = make_google_blueprint(
     client_secret=os.environ.get('GOOGLE_CLIENT_SECRET'),
     scope=["https://www.googleapis.com/auth/userinfo.email",
            "https://www.googleapis.com/auth/userinfo.profile"],
-    redirect_url="/index"
+    redirect_url="/"
 )
 
 SWAGGER_URL = '/swagger'

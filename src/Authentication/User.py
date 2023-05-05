@@ -1,3 +1,4 @@
+""" Class to define information about users"""
 from flask_login import UserMixin
 
 

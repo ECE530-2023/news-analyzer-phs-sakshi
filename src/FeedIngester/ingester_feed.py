@@ -20,7 +20,7 @@ async def upload_file_to_s3(file_data, file):
     :param file: name of the file to uplaod
     :return: name of the uploaded file
     """
-    # filename = secure_filename(file.filename)
+
     try:
         s3.upload_fileobj(
             file_data,
@@ -32,7 +32,6 @@ async def upload_file_to_s3(file_data, file):
         )
 
     except Exception as e:
-        # This is a catch all exception, edit this part to fit your needs.
         print_string("Something Happened: " + str(e))
         logging.info("file not uploaded to S3 "+file.filename)
         return e

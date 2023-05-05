@@ -1,4 +1,5 @@
 """tests text analyzer module"""
+
 import logging
 import csv
 import string
@@ -97,6 +98,7 @@ def analyze_file_sentiment(file, file_id):
 
 
 def analyze_paragraph_sentiment(para_id, para, file_id):
+    """ get the sentiment associated with a paragraph """
     blob = TextBlob(para)
     sentiment = blob.sentiment.polarity
     if sentiment < -1.0:
@@ -110,28 +112,28 @@ def analyze_paragraph_sentiment(para_id, para, file_id):
 
 
 def convert_file_to_text(file, file_extension):
-    """
-    Extract text from the file based on its extension.
-    """
+    """ Extract text from the file based on its extension """
 
     if file_extension == 'pdf':
-        pdf_reader = pypdf.PdfReader(file)
-        text = ''
-        for page_num in range(len(pdf_reader.pages)):
-            page = pdf_reader.pages[page_num]
-            text += page.extract_text()
-        return text
-
+        text = convert_pdf_to_text(file)
+    elif file_extension in ['jpg', 'jpeg', 'png']:
+        text = convert_image_to_text(file)
+    elif file_extension == 'csv':
+        text = convert_csv_to_text(file)
+    elif file_extension == 'docx':
+        text = convert_doc_to_text(file)
+    else:
+        text = textract.process(file, method='tesseract').decode('utf-8')
     # extract text from other file types using Textract library
-    text = textract.process(file, method='tesseract')
-    return text.decode('utf-8')
+    return text if text else ''
 
 
 def convert_pdf_to_text(file):
     """ extract the text from a pdf file """
     pdf_reader = pypdf.PdfReader(file)
     text = ''
-    for page in pdf_reader.pages:
+    for page_num in range(len(pdf_reader.pages)):
+        page = pdf_reader.pages[page_num]
         text += page.extract_text()
     return text
 
@@ -198,8 +200,6 @@ def get_definition(keyword):
 
 def get_document_summary(text):
     """ returns the summary of a file"""
-    # text = get_text_of_file(file_id)
-    # Tokenize the document text into individual sentences
     sentences = sent_tokenize(text)
     word_frequencies = {}
     for sentence in sentences:
