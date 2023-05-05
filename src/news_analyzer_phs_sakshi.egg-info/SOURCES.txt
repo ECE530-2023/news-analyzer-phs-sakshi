@@ -2,7 +2,6 @@ LICENSE
 README.md
 pyproject.toml
 requirements.txt
-src/Thread.py
 src/__init__.py
 src/app.py
 src/main.py
