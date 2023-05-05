@@ -61,7 +61,8 @@
 </head>
 <body>
 {% include 'base.html' %}
-<div style="margin: 50px">
+<section>
+<div>
 <h1>Search Keyword</h1>
 <form style="margin: 20px" name="search_form" method="POST" action="/keywordDefinition" onsubmit="return validateInput()">
     <label for="keyword">Enter Keyword:</label>
@@ -78,6 +79,7 @@
 {% endif %}
     <br>
 </div>
+</section>
 
 
 

@@ -17,8 +17,6 @@ from src.app import app
 # 404 - File not found
 # 415 - Unsupported Media type
 # 500 - Internal Server Error
-
-
 @app.route('/upload', methods=['POST'])
 async def upload_document():
     """ uploads a document to S3 and analyses the file"""

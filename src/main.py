@@ -1,18 +1,17 @@
+""" main class to start the app and register all APIs"""
 import json
-
+import requests
 from flask import render_template, redirect, url_for, jsonify
 from flask_dance.contrib.google import google
 from flask_login import logout_user, login_user, login_required, current_user
-import requests
-import os
 from app import app, login_manager
 from src.Authentication.User import User
+from src.FileUploader.file_uploader_impl import get_user_file_ids
 from src.FileUploader.upload_file import upload_document, download_document
 from src.database.Users import addUser
-from src.database.create_database import start_database
 from src.TextAnalysis.file_analysis import get_keyword_definition, analyze_complete_file, document_summary
+from src.database.create_database import start_database
 
-app.secret_key = "supersecretkey"
 
 @app.route('/swagger.json')
 def swagger():
@@ -69,6 +68,13 @@ def uploader():
 def download():
     if current_user.is_authenticated:
         return download_document()
+    return render_template('unauthorized_access.html')
+
+@login_required
+@app.route('/downloader', methods=['GET'])
+def downloader():
+    if current_user.is_authenticated:
+        return render_template('downloader.html', files=get_user_file_ids())
     return render_template('unauthorized_access.html')
 
 @login_manager.unauthorized_handler
@@ -131,7 +137,7 @@ def analyze():
     user_id = None
     if current_user.is_authenticated:
         user_id = current_user.id
-        return render_template('analyze.html', user=user_id)
+        return render_template('analyze.html', user=user_id, files=get_user_file_ids())
     return render_template('unauthorized_access.html')
 
 @app.route('/documentSummary',methods=['POST'])
@@ -149,4 +155,4 @@ def get_about():
 
 if __name__ == '__main__':
     start_database()
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='127.0.0.1', port=5000)

@@ -119,12 +119,16 @@
     <a href="/">Home</a>
     <a href="/about">About</a>
     <a href="/uploader">Upload Document</a>
-    <a href="/uploader">Download Document</a>
+    <a href="/downloader">Download Document</a>
     <a href="/analyze">Process File</a>
-    <a href="/search">Search Keywords</a>
+    <a href="/search">Search</a>
     {% if user %}
     <form action="{{ url_for('logout') }}" method="post">
         <button type="submit">Logout</button>
+    </form>
+    {% else %}
+    <form action="{{ url_for('google.login') }}" method="post">
+        <button type="submit">Login</button>
     </form>
     {% endif %}
 </nav>

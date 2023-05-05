@@ -202,7 +202,7 @@
 
         function validateInput() {
             var input = document.forms["download_form"]["fileId"].value;
-            var regex = /^[a-zA-Z0-9 .]+$/; // only allow alphanumeric characters
+            var regex = /^[a-zA-Z0-9 .-]+$/; // only allow alphanumeric characters
             if (!input.match(regex)) {
                 alert("Input must only contain alphanumeric characters.");
                 return false;
@@ -241,7 +241,7 @@
                 <h1>Upload documents</h1>
                 <form class ="uploads" method="POST" enctype="multipart/form-data" action="/upload" onsubmit="return validateForm()">
 
-                    <input type="file" name="files[]" id="fileUpload" accept=".pdf, .png, .jpg, .jpeg, .csv, .doc, .txt" multiple>
+                    <input type="file" name="files[]" id="fileUpload" accept=".pdf, .png, .jpg, .jpeg, .csv, .docx, .txt" multiple>
                     <input type="submit" value="Upload" class="btn btn-primary">
                     <div id="spinner" style="display: none;">
                         <div class="spinner-border" role="status">
@@ -253,22 +253,22 @@
 
             </div>
         </div>
-        <hr>
-        <div>
-            <div>
-                <h1 class="text-center mb-4">Download a Document</h1>
-                <form name="download_form" method="GET" action="/download" onsubmit="return validateInput()" style="display: flex; margin-bottom: 20px">
-                    <div class="file-download">
-                        <input type="text" class="form-control" name="fileId" placeholder="Enter File ID" aria-label="Enter File ID" aria-describedby="basic-addon2">
-                        <div class="input-group-append">
-                            <input class="btn btn-primary" type="submit" style="margin-left: 70px" value="Download">
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <a class="back-button" href="/home">&larr; Back</a>
-        {% endif %}
+<!--        <hr>-->
+<!--        <div>-->
+<!--            <div>-->
+<!--                <h1 class="text-center mb-4">Download a Document</h1>-->
+<!--                <form name="download_form" method="GET" action="/download" onsubmit="return validateInput()" style="display: flex; margin-bottom: 20px">-->
+<!--                    <div class="file-download">-->
+<!--                        <input type="text" class="form-control" name="fileId" placeholder="Enter File ID" aria-label="Enter File ID" aria-describedby="basic-addon2">-->
+<!--                        <div class="input-group-append">-->
+<!--                            <input class="btn btn-primary" type="submit" style="margin-left: 70px" value="Download">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <a class="back-button" href="/home">&larr; Back</a>-->
+<!--        {% endif %}-->
     </div>
 </section>
 {% endblock %}

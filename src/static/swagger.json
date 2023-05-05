@@ -146,48 +146,6 @@
         }
       }
     },
-    "/paragraphsBySentiment": {
-      "get": {
-        "summary": "Search for paragraphs with given sentiment",
-        "parameters": [
-          {
-            "name": "sentiment",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "positive",
-                "negative",
-                "neutral"
-              ]
-            },
-            "description": "Sentiment to match the paragraphs"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
     "/keywordDefinition": {
       "post": {
         "summary": "Get the definition of a keyword",
@@ -257,7 +215,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "fileId": {
+                "file_id": {
                   "type": "string",
                   "description": "The ID of the file to be analyzed."
                 }

@@ -16,7 +16,9 @@ def create_database():
     record = execute_query(sqlite_select_query)
     print_string("SQLite Database Version is: " + str(record))
 
+
 def start_database():
+    """ create database and all tables"""
     create_database()
     create_users_table()
     create_documents_table()

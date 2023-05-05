@@ -5,6 +5,7 @@ from src.FileUploader.upload_file import app
 from io import BytesIO
 import io
 
+
 class TestFileUpload(unittest.TestCase):
 
 
@@ -68,8 +69,8 @@ class TestFileUpload(unittest.TestCase):
         with app.test_client() as client:
             response = client.get('/download?fileId=file_id', headers={'Authorization': 'Bearer invalid_token'})
 
-        # Check that the response status code is 401
-        self.assertEqual(response.status_code, 500)
+        # Check that the response status code is 404
+        self.assertEqual(response.status_code, 404)
 
     def test_download_document_file_not_found(self):
         # Mock a GET request with a non-existent fileId and a valid token in the headers
@@ -77,8 +78,8 @@ class TestFileUpload(unittest.TestCase):
             response = client.get('/download?fileId=invalid_file_id',
                                   headers={'Authorization': 'Bearer token'})
 
-        # Check that the response status code is 400
-        self.assertEqual(response.status_code, 500)
+        # Check that the response status code is 404
+        self.assertEqual(response.status_code, 404)
 
 
 if __name__ == '__main__':

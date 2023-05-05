@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <style>
+
+        /* Additional styles for file download */
+        .file-download {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .file-download a {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .file-download a:hover {
+            background-color: #0069d9;
+        }
+
+        section.upload-section {
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: #f5f5f5;
+            border-radius: 0.5rem;
+        }
+
+
+        .btn {
+            border: none;
+            border-radius: 4px;
+            padding: 12px 20px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #428bca;
+            color: #ffffff;
+        }
+
+        .btn:hover,
+        .btn:focus {
+            opacity: 0.8;
+            outline: none;
+        }
+
+
+        .file-text {
+            font-size: small;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        h1 {
+            margin-top: 40px;
+        }
+
+
+        .back-button {
+            display: inline-block;
+            padding: 10px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.2s ease;
+        }
+
+        .back-button:hover {
+            background-color: #ddd;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+
+    </style>
+    <script>
+
+        function validateInput() {
+            var input = document.forms["download_form"]["fileId"].value;
+            var regex = /^[a-zA-Z0-9 .-_]+$/; // only allow alphanumeric characters
+            if (!input.match(regex)) {
+                alert("Input must only contain alphanumeric characters.");
+                return false;
+            }
+        }
+
+    </script>
+
+</head>
+<body>
+
+{% include 'base.html' %}
+<section>
+    <div>
+        <div>
+            <div>
+                <h1 class="text-center mb-4">Download a Document</h1>
+                <form name="download_form" method="GET" action="/download" onsubmit="return validateInput()" style="display: flex; margin-bottom: 20px">
+                    <div class="file-download">
+<!--                        <input type="text" class="form-control" name="fileId" placeholder="Enter File ID" aria-label="Enter File ID" aria-describedby="basic-addon2">-->
+                        <select name="fileId" class="form-control" style="padding: 10px; font-size: 14px;
+                            border-radius: 5px;
+                            border: 1px solid #ccc;">
+                            {% for file in files %}
+                            <option value="{{ file }}">{{ file }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="input-group-append">
+                            <input class="btn btn-primary" type="submit" style="margin-left: 70px" value="Download">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <a class="back-button" href="/home">&larr; Back</a>
+    </div>
+</section>
+
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/downloader.js') }}"></script>
+{% endblock %}
+
+</body>
+</html>

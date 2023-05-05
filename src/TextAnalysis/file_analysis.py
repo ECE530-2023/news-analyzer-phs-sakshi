@@ -5,10 +5,9 @@ from flask_login import current_user
 
 from src.FileUploader.file_uploader_impl import get_user_file_ids
 from src.TextAnalysis.text_analyzer_impl import get_definition, \
-    get_paragraphs_by_sentiment, get_paragraphs_by_keywords, \
-    get_document_summary, get_file_info
+    get_paragraphs_by_sentiment, get_paragraphs_by_keywords, get_file_info
 from src.app import app
-from src.database.Document import get_text_of_file
+from src.database.Document import get_summary_of_file
 
 
 # @Input parameters - keywords to match the paragraphs
@@ -65,11 +64,16 @@ def get_keyword_definition():
 def document_summary():
     """get the summary of the document"""
     file_id = request.form['file_id']
-    text = get_text_of_file(file_id)
-    summary = get_document_summary(text)
+    summary = get_summary_of_file(file_id)
     if summary:
         return summary, 200
     return 'Unable to find document', 400
+
+# @Input parameters - file id of the file to summarize
+# Response -
+# 200 - Successful - analysis of the file
+# 400 - Bad Request - file not found
+# 500 - Internal Server Error
 @app.route('/file_analysis', methods=['POST'])
 def analyze_complete_file():
     """ analyse the file - calculate keywords, summary, sentiment"""
@@ -80,9 +84,10 @@ def analyze_complete_file():
         return render_template('analyze.html', not_found=True)
     try:
         name, link, sentiment, date, size, summary, keywords = get_file_info(file_id)
-        return render_template('analyze.html', file_analyzed=True, name=name, link=link, date_uploaded=date, size=size,keywords=keywords, summary=summary, sentiment=sentiment, user=current_user.id)
+        return render_template('analyze.html', file_analyzed=True, name=name, link=link, date_uploaded=date, size=size,keywords=keywords, summary=summary, sentiment=sentiment, user=current_user.id), 200
     except Exception as e:
-        raise Exception(500, str(e))
+        return 'Server Error' + e, 400
+
 
 
 

@@ -24,33 +24,10 @@ def execute_query(query, param=None):
     finally:
         if sqlite_connection:
             sqlite_connection.close()
-            #print("The SQLite connection is closed")
     return record
 
 
-# def execute_query(query, param):
-#     """execute queries"""
-#
-#     sqlite_connection = sqlite3.connect('SQLite_Python.db')
-#     record = False
-#     try:
-#         cursor = sqlite_connection.cursor()
-#         cursor.execute(query, param)
-#         sqlite_connection.commit()
-#         cursor.close()
-#         return True
-#     except sqlite3.Error as error:
-#         print_string("Error while connecting to sqlite" + str(error) + query)
-#         record = False
-#     finally:
-#         if sqlite_connection:
-#             sqlite_connection.close()
-#             #print("The SQLite connection is closed")
-#     return record
-
-
-
-def execute_insert_query(query,param):
+def execute_insert_query(query, param):
     """execute queries"""
 
     sqlite_connection = sqlite3.connect('News_Analyzer.db')
