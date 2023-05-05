@@ -19,6 +19,7 @@ but due to security reasons I have replaced them with an empty string. If you wa
     - set values variables for 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'AWS_S3_ACCESS_KEY', 'AWS_S3_ACCESS_SECRET','AWS_S3_BUCKET_NAME' in the Dockerfile
     - open the terminal
     - cd path/to/project
+    - start docker
     - enter command - docker build -t news-analyzer-phs-sakshi .
     - enter command - docker run -d -p 8000:5000 news-analyzer-phs-sakshi
     - open port 127.0.0.1:8000 to see the application
