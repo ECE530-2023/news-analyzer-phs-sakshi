@@ -1,9 +1,11 @@
 Python Flask was used to design this application
 
+![project structure.png](project structure.png)
+
 The project is divided into 4 main modules -
 Each module contains a main file and an implementation file. for example for TextAnalysis module - we have a main file - file_analysis.py
 where all the apis live and a text_analyzer_impl.py file which contains all the logic for analysis the file, updating the database,etc.
-This is consistent for all teh modules.
+This is consistent for all the modules.
 
 1. Authentication - The project uses Google authentication for authorizing the user
 The Authentication module contains information about User storage
