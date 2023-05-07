@@ -123,7 +123,7 @@ def convert_file_to_text(file, file_extension):
     elif file_extension == 'docx':
         text = convert_doc_to_text(file)
     else:
-        text = textract.process(file, method='tesseract').decode('utf-8')
+        text = file.read().decode('utf-8')
     # extract text from other file types using Textract library
     return text if text else ''
 
@@ -200,33 +200,36 @@ def get_definition(keyword):
 
 def get_document_summary(text):
     """ returns the summary of a file"""
-    sentences = sent_tokenize(text)
-    word_frequencies = {}
-    for sentence in sentences:
-        for word in nltk.word_tokenize(sentence):
-            if word not in word_frequencies:
-                word_frequencies[word] = 1
-            else:
-                word_frequencies[word] += 1
-    maximum_frequency = max(word_frequencies.values())
-    for word in word_frequencies.keys():
-        word_frequencies[word] = (word_frequencies[word]/maximum_frequency)
+    try:
+        sentences = sent_tokenize(text)
+        word_frequencies = {}
+        for sentence in sentences:
+            for word in nltk.word_tokenize(sentence):
+                if word not in word_frequencies:
+                    word_frequencies[word] = 1
+                else:
+                    word_frequencies[word] += 1
+        maximum_frequency = max(word_frequencies.values())
+        for word in word_frequencies:
+            word_frequencies[word] = word_frequencies[word]/maximum_frequency
 
-    # Calculate the score of each sentence based on the sum of the scores of its words
-    sentence_scores = {}
-    for sentence in sentences:
-        for word in nltk.word_tokenize(sentence.lower()):
-            if word in word_frequencies.keys():
-                if len(sentence.split(' ')) < 30:
-                    if sentence not in sentence_scores.keys():
-                        sentence_scores[sentence] = word_frequencies[word]
-                    else:
-                        sentence_scores[sentence] += word_frequencies[word]
+        # Calculate the score of each sentence based on the sum of the scores of its words
+        sentence_scores = {}
+        for sentence in sentences:
+            for word in nltk.word_tokenize(sentence.lower()):
+                if word in word_frequencies.keys():
+                    if len(sentence.split(' ')) < 30:
+                        if sentence not in sentence_scores.keys():
+                            sentence_scores[sentence] = word_frequencies[word]
+                        else:
+                            sentence_scores[sentence] += word_frequencies[word]
 
-    # Print the summary, which consists of the three highest-scoring sentences
-    summary_sentences = nlargest(3, sentence_scores, key=sentence_scores.get)
-    summary = ' '.join(summary_sentences)
-    return summary
+        # Print the summary, which consists of the three highest-scoring sentences
+        summary_sentences = nlargest(3, sentence_scores, key=sentence_scores.get)
+        summary = ' '.join(summary_sentences)
+        return summary
+    except Exception:
+        return ''
 
 
 def get_paragraphs_by_sentiment(sentiment):

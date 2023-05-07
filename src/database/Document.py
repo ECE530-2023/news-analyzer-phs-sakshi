@@ -79,8 +79,8 @@ def get_summary_of_file(file_id):
     """ get the summary of the file"""
 
     query = '''SELECT summary from documents where doc_name = ?'''
-    res = execute_query(query, (file_id,))[0]  # take the first result
-    return res[0]
+    res = execute_query(query, (file_id,))  # take the first result
+    return res[0][0] if res else ''
 
 
 def download_file(url):

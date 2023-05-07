@@ -13,7 +13,9 @@ COPY requirements.txt /documentAnalyzer/requirements.txt
 # switch working directory
 WORKDIR /documentAnalyzer
 
-
+ENV PYHTONUNBUFFERED=1
+RUN apt-get update \
+  && apt-get -y install tesseract-ocr
 # install the dependencies and packages in the requirements file
 RUN pip install --no-cache-dir -r requirements.txt
 

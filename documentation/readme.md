@@ -51,16 +51,17 @@ File Upload module -
 - User should be able to upload documents in different formats(jpg,pdf,csv,doc,png)
 - User should be able to download his past documents
 
-File Analysis module -
+Text Analysis module -
 - User should be able to see document summary
 - User should be able to find all paragraphs related to a sentiment(positive/negative/neutral)
 - User should be able to find the definition for a given keyword
 - see all the keywords associated with a file
+- Used NLTK library for tokenization and getting the keywords, summary and sentiment
 
 File Ingester module -
 - User should be able to ingest files to AWS S3
 
-I would prefer a entity based module for this project.
+I would prefer an entity based module for this project.
 
 
 Features
@@ -81,3 +82,9 @@ It contains information about what each API does, their error codes, input param
 7. Unit tests - we have sunny and non-sunny unit tests for each module
 
 8. We used async/ await (we implemented this for the FeedIngester and the TextAnalysis module) to have multiprocessing in the project
+
+Future work - 
+- Add support for more file formats, such as HTML, XML, and JSON.
+- Enhance the security of the application by implementing additional authentication mechanisms, such as two-factor authentication or OAuth.
+- Implement permission set for users, such as upload only, download only, etc.
+- Integrate the application with third-party data sources such as news feeds, social media, and web pages, to provide additional context and insights into the analyzed documents.

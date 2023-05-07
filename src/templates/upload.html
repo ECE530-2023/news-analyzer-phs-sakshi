@@ -175,7 +175,7 @@
             const fileInput = document.getElementById('fileUpload');
             const uploadButton = document.querySelector('.uploads [type="submit"]');
             const fileError = document.getElementById('fileError');
-            const allowedExtensions = ['pdf', 'png', 'jpg', 'jpeg', 'csv', 'doc', 'txt'];
+            const allowedExtensions = ['pdf', 'png', 'jpg', 'jpeg', 'csv', 'docx', 'txt'];
             const files = Array.from(fileInput.files);
             const invalidFiles = files.filter(file => !allowedExtensions.includes(file.name.split('.').pop().toLowerCase()));
 
@@ -249,7 +249,7 @@
                     </div>
                     <span class="error" id="fileError"></span>
                 </form>
-                <p class="file-text">Supported file types: PDF, PNG, JPG, JPEG, CSV, DOC, TXT. Maximum of 5 files.</p>
+                <p class="file-text">Supported file types: PDF, PNG, JPG, JPEG, CSV, DOCX, TXT. Maximum of 5 files.</p>
 
             </div>
         </div>
@@ -268,7 +268,7 @@
 <!--            </div>-->
 <!--        </div>-->
 <!--        <a class="back-button" href="/home">&larr; Back</a>-->
-<!--        {% endif %}-->
+        {% endif %}
     </div>
 </section>
 {% endblock %}
